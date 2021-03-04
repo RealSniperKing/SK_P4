@@ -1,23 +1,9 @@
 # coding: utf-8
 
 import logging as lg
-from os import system, name
 
-# --- DISPLAY ---
-
-
-def clear():
-    if name == "nt":
-        _ = system("cls")
-    else:
-        _ = system("clear")
-
-
-def show_menu(title, input_value):
-    clear()
-    print(title)
-    choice = input(input_value)
-    return choice
+from display_operations import show_menu
+from controller import start_new_tournament  # keep this line
 
 
 # --- MENUS ---
@@ -63,19 +49,14 @@ def menu_tournament_actions():
     func_to_run = eval(choices[choice])
 
 
-# --- TOOLS ---
-
-
-def start_new_tournament():
-    print("start_new_tournament")
-
-
 def main():
+
     lg.basicConfig(level=lg.DEBUG)
 
     main_menu_actions()
 
     # t = Tournament()
+
 
 if __name__ == '__main__':
     main()

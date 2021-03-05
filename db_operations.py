@@ -6,7 +6,7 @@ from pathlib import Path
 from basics_operations import add_folder
 
 
-def create_bdd_folder():
+def create_db_folder():
     base_dir_script = Path.cwd()
     # GET 'BDD' FOLDER
     try:
@@ -16,7 +16,7 @@ def create_bdd_folder():
     return path_bdd_directory
 
 
-def create_bdd_table(path, name):
+def create_db_table(path, name):
     path_table = Path(path, name + ".json")
 
     db = TinyDB(path_table)
@@ -28,3 +28,6 @@ def create_bdd_table(path, name):
 
 def insert_objects_in_table(table, serialized_objects):
     table.insert_multiple(serialized_objects)
+
+
+# TODO search object in BDD

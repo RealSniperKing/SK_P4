@@ -10,52 +10,64 @@ from controller import start_new_tournament  # keep this line
 
 
 def main_menu_actions():
-    choice = "0"
-    choices = {"1": "menu_player_actions()", "2": "menu_tournament_actions()", "3": "start_new_tournament()"}
+    """ Display main menu and control calls to actions """
+    choice = 0
+    choices = {1: "- Enter 1 to acces Players Menu.\n",
+               2: "- Enter 2 to acces Tournaments Menu\n",
+               3: "- Enter 3 to start a new tournament\n"}
 
     while choice not in list(choices):
-        choice = show_menu("M A I N - M E N U",
-                                "- Enter 1 to acces Players Menu.\n"
-                                "- Enter 2 to acces Tournaments Menu\n"
-                                "- Enter 3 to start a new tournament\n")
-    func_to_run = eval(choices[choice])
+        choice = int(show_menu("MAIN - MENU",  ''.join(choices.values())))
 
+    if choice == 1:
+        menu_player_actions()
+    elif choice == 2:
+        menu_tournament_actions()
+    elif choice == 3:
+        start_new_tournament()
 
 def menu_player_actions():
-    choice = "0"
-    choices = {"1": "menu_player_actions()", "2": "menu_tournament_actions()",
-               "3": "start_new_tournament()", "4": "main_menu_actions()"}
+    """ Display players menu and control calls to actions """
+    choice = 0
+    choices = {1: "- Enter 1 to Add player\n",
+               2: "- Enter 2 to Edit Player\n",
+               3: "- Enter 3 to Remove Player\n",
+               4: "- Enter 4 to Return in Main Menu\n"}
 
-    while choice not in list(choices):
-        choice = show_menu("P L A Y E R - M E N U",
-                           # "- Enter 1 to Add player.\n"
-                           # "- Enter 2 to Edit Player\n"
-                           # "- Enter 3 to Remove Player\n"
-                           "- Enter 4 to Return in Main Menu\n")
-    func_to_run = eval(choices[choice])
+    while choice not in choices:
+        choice = int(show_menu("PLAYER - MENU", ''.join(choices.values())))
 
+    if choice == 1:
+        menu_player_actions()
+    elif choice == 2:
+        menu_tournament_actions()
+    elif choice == 3:
+        start_new_tournament()
+    elif choice == 4:
+        main_menu_actions()
 
 def menu_tournament_actions():
-    choice = "0"
-    choices = {"1": "menu_player_actions()", "2": "menu_tournament_actions()",
-               "3": "start_new_tournament()", "4": "main_menu_actions()"}
+    """ Display tournament menu and control calls to actions """
+    choice = 0
+    choices = {1: "- Enter 1 to Edit Tournament\n",
+               2: "- Enter 2 to Delete Tournament\n",
+               4: "- Enter 4 to Return in Main Menu\n"}
 
     while choice not in list(choices):
-        choice = show_menu("T O U R N A M E N T - M E N U",
-                           # "- Enter 1 to Add player.\n"
-                           # "- Enter 2 to Edit Player\n"
-                           # "- Enter 3 to Remove Player\n"
-                           "- Enter 4 to Return in Main Menu\n")
-    func_to_run = eval(choices[choice])
+        choice = int(show_menu("TOURNAMENT - MENU", ''.join(choices.values())))
 
+    if choice == 1:
+        menu_player_actions()
+    elif choice == 2:
+        menu_tournament_actions()
+    elif choice == 4:
+        main_menu_actions()
 
 def main():
-
+    """ Run main menu """
     lg.basicConfig(level=lg.DEBUG)
 
     main_menu_actions()
-
-    # t = Tournament()
 
 
 if __name__ == '__main__':

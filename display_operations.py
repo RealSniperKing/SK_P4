@@ -13,8 +13,10 @@ def clear():
         _ = system("clear")
 
 
-def show_menu(title, input_value):
-    clear()
+def show_menu(title, input_value, clear_console=True):
+    if clear_console is True:
+        clear()
+
     print(title)
     choice = input(input_value)
     return choice

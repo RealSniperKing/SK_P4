@@ -1,7 +1,5 @@
 # coding: utf-8
 
-# from bdd_operations import create_bdd_folder, create_bdd_table, insert_objects_in_table
-
 class Player():
     def __init__(self, name, firstname, birthday, gender, ranking):
         self.name = name

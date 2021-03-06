@@ -22,20 +22,14 @@ class Database:
     def __init__(self, path, name):
         self.path = path
         self.name = name
-
-        self.db = None
-        self.current_table_name = None
-        self.current_table_object = None
-        self.serialized_objects = None
-
-        self.item_to_search = None
-
-    def create_or_load_tiny_db(self):
         path_table = Path(self.path, self.name + ".json")
         self.db = TinyDB(path_table)
 
-    # def set_current_table_name(self, value):
-    #     self.current_table_name = value
+        # DEF VAR
+        self.current_table_name = None
+        self.current_table_object = None
+        self.serialized_objects = None
+        self.item_to_search = None
 
     def create_or_load_table_name(self, value):
         self.current_table_name = value
@@ -48,7 +42,8 @@ class Database:
 
         return players_table
 
-    def insert_serialized_objects_in_current_table(self):
+    def insert_serialized_objects_in_current_table(self, value):
+        self.serialized_objects = value
         self.current_table_object.insert_multiple(self.serialized_objects)
 
     def search_item_in_table(self, value):

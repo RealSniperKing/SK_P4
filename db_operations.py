@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from tinydb import TinyDB
+from tinydb import TinyDB, Query, where
 from pathlib import Path
 
 from basics_operations import add_folder
@@ -15,19 +15,48 @@ def create_db_folder():
         path_bdd_directory = ""
     return path_bdd_directory
 
+# class DBTable:
+#     def __init__(self, name):
 
-def create_db_table(path, name):
-    path_table = Path(path, name + ".json")
+class Database:
+    def __init__(self, path, name):
+        self.path = path
+        self.name = name
 
-    db = TinyDB(path_table)
-    players_table = db.table("players")
-    #players_table.truncate()  # clear the table first
+        self.db = None
+        self.current_table_name = None
+        self.current_table_object = None
+        self.serialized_objects = None
 
-    return players_table
+        self.item_to_search = None
 
+    def create_or_load_tiny_db(self):
+        path_table = Path(self.path, self.name + ".json")
+        self.db = TinyDB(path_table)
 
-def insert_objects_in_table(table, serialized_objects):
-    table.insert_multiple(serialized_objects)
+    # def set_current_table_name(self, value):
+    #     self.current_table_name = value
 
+    def create_or_load_table_name(self, value):
+        self.current_table_name = value
+
+        players_table = None
+        if self.current_table_name is not None:
+            players_table = self.db.table(self.current_table_name)
+            #players_table.truncate()  # clear the table first
+            self.current_table_object = players_table
+
+        return players_table
+
+    def insert_serialized_objects_in_current_table(self):
+        self.current_table_object.insert_multiple(self.serialized_objects)
+
+    def search_item_in_table(self, value):
+        self.item_to_search = value
+        Player = Query()
+        #test = db_table.search(Player.firstname == 'Eli')
+        test = self.current_table_object.search(Player.firstname.search(self.item_to_search))
+
+        print(test)
 
 # TODO search object in BDD

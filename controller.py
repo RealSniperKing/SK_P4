@@ -3,10 +3,11 @@
 from display_operations import print_dico_items, clear
 from inputs_operations import main_menu_actions, inputs_add_player, dialog_box_to_confirm_or_cancel
 
-from player_model import Player
+from models.player_model import Player
 from db_operations import create_db_folder, Database
 
 from algorithm import AlgoSuisse
+from models.round import Round
 
 
 def add_player_in_db():
@@ -76,7 +77,19 @@ def start_game():
     # GET ALL ITEMS
     serialized_players = database_object.get_all_items_in_current_table()
 
-    players_game = AlgoSuisse(serialized_players)
-    players_game.first_sort_players()
+    algo = AlgoSuisse(serialized_players)
+    matchs = algo.step_1_2()
+
+    # ROUND 1
+    round_1 = Round(matchs, "Round 1")
+    round_1.start()
+    round_1.play(1)
+    round_1.end()
+
+    players_results = round_1.round_results()
+
+    # OTHERS ROUNDS
+    algo.step_3(players_results)
+
 
 start_game()

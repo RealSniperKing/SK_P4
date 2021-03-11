@@ -6,8 +6,10 @@ from inputs_operations import main_menu_actions, inputs_add_player, dialog_box_t
 from player_model import Player
 from db_operations import create_db_folder, Database
 
+from algorithm import AlgoSuisse
 
-def add_player():
+
+def add_player_in_db():
     """ Contains all operations to add a new player in data base """
     # USER INPUTS
     name, first_name, birthday, gender, ranking = inputs_add_player()
@@ -36,6 +38,19 @@ def add_player():
         main_menu_actions()
 
 
+def load_all_items_from_db_table(table_name):
+    # CREATE OR ACCES TO DIRECTORY
+    path_bdd = create_db_folder()
+
+    # CREATE OR LOAD DATABASE
+    database_object = Database(path_bdd, "database")
+
+    # CREATE OR LOAD PLAYERS
+    database_object.create_or_load_table_name(table_name)
+
+    return database_object, database_object.current_table_object
+
+
 def search_element_in_db():
     # CREATE OR ACCES TO DIRECTORY
     path_bdd = create_db_folder()
@@ -55,5 +70,13 @@ def start_new_tournament():
     #t = Tournament()
 
 
-add_player()
-#search_element_in_db()
+def start_game():
+    database_object, table_object = load_all_items_from_db_table('players')
+
+    # GET ALL ITEMS
+    serialized_players = database_object.get_all_items_in_current_table()
+
+    players_game = AlgoSuisse(serialized_players)
+    players_game.first_sort_players()
+
+start_game()

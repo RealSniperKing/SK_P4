@@ -86,7 +86,7 @@ def load_all_items_from_db_table(table_name):
     # CREATE OR LOAD PLAYERS
     database_object.create_or_load_table_name(table_name)
 
-    return database_object, database_object.current_table_object
+    return database_object
 
 
 def search_element_in_db():
@@ -111,16 +111,32 @@ def start_new_tournament():
 
 
 def start_game():
-    database_object, table_object = load_all_items_from_db_table('players')
+    """ Start directly game without menu"""
 
+    # LOAD TOURNAMENT
+    database_object = load_all_items_from_db_table('tournaments')
+    serialized_tournaments = database_object.get_all_items_in_current_table()
+
+    # TODO OPTION TO CHOICE THE TOURNAMENT
+    st = serialized_tournaments[0]
+    tournament = Tournament(st["name"], st["place"], st["duration"], st["dates"], st["turns"], st["rounds"],
+                            st["players_count"], st["players"], st["time_control"], st["description"])
+
+    # LOAD PLAYERS
+    database_object.create_or_load_table_name('players')
+
+    # TODO OPTION TO EXTRACT 8 PLAYERS FROM BDD = serialized_players
     serialized_players = database_object.get_all_items_in_current_table()
 
+    # TODO CREATE PLAYERS OBJECTS HERE --> don't plug "serialized_players" to algo
     algo = AlgoSuisse(serialized_players)
     matchs = algo.first_sort()
-
+    
     first_round = Round(matchs, "Round 1")
+    tournament.add_round_in_rounds(first_round)
+
     first_round.start().play(1).end()
 
     algo.second_sort(first_round).second_pairing()
 
-add_tournament_in_db()
+start_game()

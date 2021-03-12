@@ -30,6 +30,7 @@ class AlgoSuisse:
         df2 = pd.DataFrame(self.serialized_players)  # split_up = df2[0:len_half]  # split_down = df2[4:len_dico]
 
         matchs = []
+        players = []
         # ASSIGN OPPONENT TO TOP HALF PART
         for i in range(0, len_half):
             sub_df = df2.iloc[[i, i + len_half], [0, 1, 2, 3, 4]]
@@ -37,9 +38,11 @@ class AlgoSuisse:
             players_and_scores = [] * 2  # This list contain 2 players
             for index, row in sub_df.iterrows():
                 dico = row.to_dict()
-
                 # CREATE PLAYER OBJECT
                 player = Player(dico["name"], dico["firstname"], dico["birthday"], dico["gender"], dico["ranking"])
+
+                if player not in players:
+                    players.append(player)
                 score = 0
                 players_and_scores.append([player, score])
 
@@ -48,7 +51,9 @@ class AlgoSuisse:
 
             # ADD MATCH IN MATCHS LIST
             matchs.append(match)
-        return matchs
+
+        # print(players)
+        return matchs, players
 
     def second_sort(self, round):
         """ 3. Triez tous les joueurs en fonction de leur nombre total de points. Si plusieurs
@@ -85,9 +90,14 @@ class AlgoSuisse:
 
         return self
 
-    def second_pairing(self):
+    def second_pairing(self, rounds):
         """ 4. Associez le joueur 1 avec le joueur 2, le joueur 3 avec le joueur 4, et ainsi de suite. Si le joueur 1 a
         déjà joué contre le joueur 2, associez-le plutôt au joueur 3. """
+
+        for round in rounds:
+            print(round)
+
+        print(".....")
 
         df = self.sorted_dataframe
         for i in range(0, len(df)):

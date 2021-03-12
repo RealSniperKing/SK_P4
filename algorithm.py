@@ -13,24 +13,21 @@ class AlgoSuisse:
     def __init__(self, serialized_players):
         self.serialized_players = serialized_players
 
+        self.sorted_dataframe = None
+        self.round = None
+
     def sort_players_by(self, key):
         self.serialized_players.sort(key=operator.itemgetter(key))  # Sorted dictionaries
 
-    def step_1_2(self):
+    def first_sort(self):
         """ 1. Au début du premier tour, triez tous les joueurs en fonction de leur classement. """
         self.sort_players_by('ranking')
 
         """ 2. Divisez les joueurs en deux moitiés, une supérieure et une inférieure. Le meilleur joueur de la moitié 
-        supérieure est jumelé avec le meilleur joueur de la moitié inférieure, et ainsi de suite. Si nous avons huit 
-        joueurs triés par rang, alors le joueur 1 est jumelé avec le joueur 5, le joueur 2 est jumelé avec 
-        le joueur 6, etc. """
-
+        supérieure est jumelé avec le meilleur joueur de la moitié inférieure, et ainsi de suite. """
         len_dico = len(self.serialized_players)
         len_half = int(len_dico / 2)
-
-        df2 = pd.DataFrame(self.serialized_players)
-        # split_up = df2[0:len_half]
-        # split_down = df2[4:len_dico]
+        df2 = pd.DataFrame(self.serialized_players)  # split_up = df2[0:len_half]  # split_down = df2[4:len_dico]
 
         matchs = []
         # ASSIGN OPPONENT TO TOP HALF PART
@@ -43,8 +40,6 @@ class AlgoSuisse:
 
                 # CREATE PLAYER OBJECT
                 player = Player(dico["name"], dico["firstname"], dico["birthday"], dico["gender"], dico["ranking"])
-
-                # ASSIGN EMPTY SCORE
                 score = 0
                 players_and_scores.append([player, score])
 
@@ -53,12 +48,14 @@ class AlgoSuisse:
 
             # ADD MATCH IN MATCHS LIST
             matchs.append(match)
-
         return matchs
 
-    def step_3(self, players_results):
+    def second_sort(self, round):
         """ 3. Triez tous les joueurs en fonction de leur nombre total de points. Si plusieurs
         joueurs ont le même nombre de points, triez-les en fonction de leur rang. """
+        self.round = round
+        players_results = round.round_results()
+
         # CONVERT player result to dico
         players_infos_to_sort = []
         all_scores = []
@@ -66,25 +63,42 @@ class AlgoSuisse:
             player_object = player_result[0]
             player_score = player_result[1]
 
-            dico = {"player_object": "player_object", "player_score": player_score,
+            dico = {"player_object": player_object, "player_score": player_score,
                     "player_ranking": player_object.ranking}
             players_infos_to_sort.append(dico)
             all_scores.append(player_score)
 
-        all_scores_without_double = sorted(set(all_scores))
+        all_scores_without_double = list(reversed(sorted(set(all_scores))))  # Delete double, sort, invert
 
         # SORT FROM PLAYER_SCORE COLUMN
         df = pd.DataFrame(players_infos_to_sort)
         df_sorted_by_score = df.sort_values(by='player_score')
 
-        # IF SAME SORT FROM PLAYER_RANKING COLUMN
+        # SORT EACH VALUE FROM PLAYER_RANKING COLUMN
         dataframes = []
         for d_value in all_scores_without_double:
             mask = df_sorted_by_score['player_score'] == d_value
             dataframes.append(df_sorted_by_score[mask].sort_values(by='player_ranking'))
 
-        sorted_datframe = pd.concat(dataframes)
-        print(sorted_datframe)
+        self.sorted_dataframe = pd.concat(dataframes).reset_index(drop=True)  # Merge dataframes and reset index
+        #print(self.sorted_dataframe)
 
-    """ 4. Associez le joueur 1 avec le joueur 2, le joueur 3 avec le joueur 4, et ainsi de suite. Si le joueur 1 a 
-    déjà joué contre le joueur 2, associez-le plutôt au joueur 3. """
+        return self
+
+    def second_pairing(self):
+        """ 4. Associez le joueur 1 avec le joueur 2, le joueur 3 avec le joueur 4, et ainsi de suite. Si le joueur 1 a
+        déjà joué contre le joueur 2, associez-le plutôt au joueur 3. """
+
+        df = self.sorted_dataframe
+        for i in range(0, len(df)):
+            if (i + 1) % 2 == 0:
+                sub_df = df.iloc[[i-1, i], [0, 1, 2]]
+                print(sub_df)
+
+                # TODO CHECK IF PLAYER 1 HAVE ALREADY PLAYED WITH SECOND PLAYER
+
+                # for index, row in sub_df.iterrows():
+                #     dico = row.to_dict()
+                #     print(dico)
+                # print("...")
+

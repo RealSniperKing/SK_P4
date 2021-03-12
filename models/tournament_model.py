@@ -39,7 +39,11 @@ class Tournament:
 
     def add_round_in_rounds(self, value):
         self.rounds.append(value)
-
-        print("self.rounds = " + str(self.rounds))
-
         return self
+
+    def set_players(self, value):
+        self.players = value
+        return self
+
+    def get_rounds(self):
+        return self.rounds

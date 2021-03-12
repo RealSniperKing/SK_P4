@@ -36,3 +36,10 @@ class Tournament:
                                       "players_count": self.players_count, "players": self.players,
                                       "time_control": self.time_control, "description": self.description}
         return self.serialized_tournament
+
+    def add_round_in_rounds(self, value):
+        self.rounds.append(value)
+
+        print("self.rounds = " + str(self.rounds))
+
+        return self

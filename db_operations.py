@@ -15,6 +15,9 @@ def create_db_folder():
         path_bdd_directory = ""
     return path_bdd_directory
 
+
+
+
 # class DBTable:
 #     def __init__(self, name):
 
@@ -22,6 +25,7 @@ class Database:
     def __init__(self, path, name):
         self.path = path
         self.name = name
+
         path_table = Path(self.path, self.name + ".json")
         self.db = TinyDB(path_table)
 
@@ -40,7 +44,7 @@ class Database:
             #players_table.truncate()  # clear the table first
             self.current_table_object = players_table
 
-        return players_table
+        return self
 
     def insert_serialized_objects_in_current_table(self, value):
         self.serialized_objects = value
@@ -54,4 +58,11 @@ class Database:
 
         print(test)
 
-# TODO search object in BDD
+    def set_current_table_name(self, value):
+        self.current_table_name = value
+
+        return self
+
+    def get_all_items_in_current_table(self):
+        items = self.current_table_object.all()
+        return items

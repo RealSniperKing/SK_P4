@@ -128,15 +128,16 @@ def start_game():
     # TODO OPTION TO EXTRACT 8 PLAYERS FROM BDD = serialized_players
     serialized_players = database_object.get_all_items_in_current_table()
 
-    # TODO CREATE PLAYERS OBJECTS HERE --> don't plug "serialized_players" to algo
     algo = AlgoSuisse(serialized_players)
-    matchs = algo.first_sort()
-    
+    matchs, players_objects = algo.first_sort()
+    tournament.set_players(players_objects)  # init players list
+
     first_round = Round(matchs, "Round 1")
     tournament.add_round_in_rounds(first_round)
 
+    print("tournament rounds = " + str(tournament.rounds))
     first_round.start().play(1).end()
 
-    algo.second_sort(first_round).second_pairing()
+    algo.second_sort(first_round).second_pairing(tournament.rounds)
 
 start_game()

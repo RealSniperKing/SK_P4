@@ -48,7 +48,6 @@ class AlgoSuisse:
 
             # CREATE MATCH
             match = Match(players_and_scores[0], players_and_scores[1])
-
             # ADD MATCH IN MATCHS LIST
             matchs.append(match)
 
@@ -59,19 +58,19 @@ class AlgoSuisse:
         """ 3. Triez tous les joueurs en fonction de leur nombre total de points. Si plusieurs
         joueurs ont le même nombre de points, triez-les en fonction de leur rang. """
         self.round = round
-        players_results = round.round_results()
+        #players_results = round.round_results()
+        matchs = round.matchs()
 
-        # CONVERT player result to dico
+        # READ MATCH
         players_infos_to_sort = []
         all_scores = []
-        for player_result in players_results:
-            player_object = player_result[0]
-            player_score = player_result[1]
+        for match in matchs:
+            array = match.serialized_infos()
+            players_infos_to_sort.append(array[0])
+            players_infos_to_sort.append(array[1])
 
-            dico = {"player_object": player_object, "player_score": player_score,
-                    "player_ranking": player_object.ranking}
-            players_infos_to_sort.append(dico)
-            all_scores.append(player_score)
+            all_scores.append(array[0]["player_score"])
+            all_scores.append(array[1]["player_score"])
 
         all_scores_without_double = list(reversed(sorted(set(all_scores))))  # Delete double, sort, invert
 
@@ -94,21 +93,79 @@ class AlgoSuisse:
         """ 4. Associez le joueur 1 avec le joueur 2, le joueur 3 avec le joueur 4, et ainsi de suite. Si le joueur 1 a
         déjà joué contre le joueur 2, associez-le plutôt au joueur 3. """
 
+        # GENERATE PLAYERS GAMES HISTORIC FROM ALL MATCH
+        matchs_historic = []
         for round in rounds:
-            print(round)
+            matchs = round.matchs()
+            for match in matchs:
+                array = match.serialized_infos()
+                players_temp = [array[0], array[1]]
+                print(players_temp)
+                sorted_players_temp = sorted(players_temp, key=lambda x: x['player_object'].name)
+                matchs_historic.append(sorted_players_temp)
 
-        print(".....")
-
+        print("----------------")
+        new_matchs_temp = []
         df = self.sorted_dataframe
         for i in range(0, len(df)):
             if (i + 1) % 2 == 0:
-                sub_df = df.iloc[[i-1, i], [0, 1, 2]]
-                print(sub_df)
+                #sub_df = df.iloc[[i-1, i], [0, 1, 2]]
+                sub_df = df.iloc[[i - 1, i], [0, 1, 2]]
+                #print(sub_df)
 
-                # TODO CHECK IF PLAYER 1 HAVE ALREADY PLAYED WITH SECOND PLAYER
+                new_match_temp = []
+                for index, row in sub_df.iterrows():
+                    dico = row.to_dict()
+                    new_match_temp.append(dico)
 
-                # for index, row in sub_df.iterrows():
-                #     dico = row.to_dict()
-                #     print(dico)
-                # print("...")
+                new_match_temp_sorted = sorted(new_match_temp, key=lambda x: x['player_object'].name)
+                new_matchs_temp.append(new_match_temp_sorted)
+
+        print("****************************************")
+        # TODO CHECK IF PLAYER 1 HAVE ALREADY PLAYED WITH SECOND PLAYER
+        separator = "    "
+        for i, new_match in enumerate(new_matchs_temp, 0):
+            if i == 0:
+                player_one = new_match[0]['player_object']
+                player_two = new_match[1]['player_object']
+                vs = player_one.name + separator + player_two.name
+                print(vs)
+                print(".....")
+
+                switch_bool = False
+                for old_match in matchs_historic:
+                    player_one_old = old_match[0]['player_object']
+                    player_two_old = old_match[1]['player_object']
+                    vs_old = player_one_old.name + separator + player_two_old.name
+
+                    print(vs_old)
+                    if vs_old == vs:
+                        print("SWITCH")
+                        switch_bool = True
+                        break
+                    else:
+                        switch_bool = True
+                        break
+                if switch_bool == True:
+                    print("test")
+                    new_matchs_temp[0] = player_one
+                    new_matchs_temp[1] = player_two
+
+                # print("===========")
+                # print(new_match)
+                # player_one = new_match[0]['player_object']
+                # player_two = new_match[1]['player_object']
+                # vs = player_one.name + separator + player_two.name
+                # print(vs)
+
+                # if new_match in matchs_historic:
+                #     print("yes")
+                #     second_player = new_matchs_temp[0][1]
+                #     third_player = new_matchs_temp[1][0]
+                #
+                #     #SWITCH
+                #     new_matchs_temp[0][1] = third_player
+                #     new_matchs_temp[1][0] = second_player
+
+
 

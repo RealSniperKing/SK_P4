@@ -38,11 +38,11 @@ class Round:
         print("------ END ------ " + self.date_end)
         return self
 
-    def round_results(self):
+    def matchs(self):
         players_scores = []
 
-        for match in self.list_matchs:
-            for data in match.datas:
-                players_scores.append(data)
+        # for match in self.list_matchs:
+        #     for data in match.datas:
+        #         players_scores.append(data)
 
-        return players_scores
+        return self.list_matchs

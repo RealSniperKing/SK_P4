@@ -1,9 +1,10 @@
 # coding: utf-8
 from datetime import datetime
 
+
 def ask_user(message, type_var, default_value):
     # EDIT MESSAGE
-    if default_value is not "":
+    if default_value != "":
         message += " (default value = " + str(default_value) + ") :"
     else:
         message += " :"

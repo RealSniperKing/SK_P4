@@ -119,9 +119,9 @@ def start_game():
 
     # TODO OPTION TO CHOICE THE TOURNAMENT
     st = serialized_tournaments[0]
+    #print(st)
     tournament = Tournament(st["name"], st["place"], st["duration"], st["dates"], st["turns"], st["rounds"],
                             st["players_count"], st["players"], st["time_control"], st["description"])
-
     # LOAD PLAYERS
     database_object.create_or_load_table_name('players')
 
@@ -132,12 +132,19 @@ def start_game():
     matchs, players_objects = algo.first_sort()
     tournament.set_players(players_objects)  # init players list
 
+    # ROUND1
     first_round = Round(matchs, "Round 1")
     tournament.add_round_in_rounds(first_round)
-
-    print("tournament rounds = " + str(tournament.rounds))
     first_round.start().play(1).end()
 
-    algo.second_sort(first_round).second_pairing(tournament.rounds)
+    # OTHERS ROUNDS
+    print("len rounds = " + str(len(tournament.rounds)))
+    last_round = first_round
+    algo.second_sort(last_round).second_pairing(tournament.rounds)
+
+    # while len(tournament.rounds) != tournament.turns:
+    #     print("....")
+    #     algo.second_sort(last_round).second_pairing(tournament.rounds)
+
 
 start_game()

@@ -110,6 +110,17 @@ def start_new_tournament():
     #t = Tournament()
 
 
+def show_round_result(round):
+    players_list = []
+    for match in round.matchs():
+        p_one, p_two = match.serialized_infos()
+        players_list.append(p_one)
+        players_list.append(p_two)
+
+    print(round.name)
+    for player in players_list:
+        print(str(player["player_object"].tournament_ranking) + "   " +
+              str(str(player["player_object"].name)) + "    " + str(player["player_score"]))
 def start_game():
     """ Start directly game without menu"""
 
@@ -134,15 +145,34 @@ def start_game():
 
     # ROUND1
     first_round = Round(matchs, "Round 1")
+    show_round_result(first_round)
+
     tournament.add_round_in_rounds(first_round)
     first_round.start().play(1).end()
+
+    show_round_result(first_round)
 
     # OTHERS ROUNDS
     print("len rounds = " + str(len(tournament.rounds)))
     last_round = first_round
-    algo.second_sort(last_round).second_pairing(tournament.rounds)
+    rounds_count = len(tournament.rounds)
 
-    # while len(tournament.rounds) != tournament.turns:
+    while rounds_count != tournament.turns:
+        print("=====================================")
+        print("=====================================")
+        matchs = algo.second_sort(last_round).get_matchs_historic(tournament.rounds).second_pairing() \
+            .apply_first_player_condition()
+
+        new_round = Round(matchs, "Round " + str(rounds_count + 1))
+        show_round_result(new_round)
+
+        tournament.add_round_in_rounds(new_round)
+
+        new_round.start().play(1).end()
+
+        show_round_result(new_round)
+        rounds_count = len(tournament.rounds)
+
     #     print("....")
     #     algo.second_sort(last_round).second_pairing(tournament.rounds)
 

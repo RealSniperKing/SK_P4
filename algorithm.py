@@ -79,17 +79,17 @@ class AlgoSuisse:
         all_scores_without_double = list(reversed(sorted(set(all_scores))))  # Delete double, sort, invert
         players_infos_sorted = list(reversed(sorted(players_infos_to_sort, key=lambda x: x['player_object'].tournament_ranking)))
 
-        for p in players_infos_sorted:
-            print(p)
+        # for p in players_infos_sorted:
+        #     print("-----" + str(p["player_object"].name) + "    " + str(p["player_object"].tournament_ranking))
 
         # SORT FROM PLAYER_SCORE COLUMN
         df = pd.DataFrame(players_infos_sorted)
-        #print(df)
 
         # SORT EACH VALUE FROM PLAYER_RANKING COLUMN
         dataframes = []
         for d_value in all_scores_without_double:
             mask = df['player_score'] == d_value
+            #print(df[mask])
             dataframes.append(df[mask].sort_values(by='player_ranking'))
 
         self.sorted_dataframe = pd.concat(dataframes).reset_index(drop=True)  # Merge dataframes and reset index
@@ -100,7 +100,10 @@ class AlgoSuisse:
     def get_matchs_historic(self, rounds):
         # GENERATE PLAYERS GAMES HISTORIC FROM ALL MATCH
         matchs_historic = []
+        print("len round = " + str(len(rounds)))
+
         for round in rounds:
+        # matchs = rounds[len(rounds) - 1].matchs()
             matchs = round.matchs()
             for match in matchs:
                 array = match.serialized_infos()
@@ -151,19 +154,23 @@ class AlgoSuisse:
 
                 switch_bool = False
                 for old_match in self.matchs_historic:
+                    #print("old_match = " + str(old_match))
                     player_one_old = old_match[0]['player_object']
                     player_two_old = old_match[1]['player_object']
                     vs_old = player_one_old.name + separator + player_two_old.name
                     #print(vs_old)
 
-                    if vs_old == vs:
-                        # SWITCH PLAYER IN new_matchs_temp_no_sorted
+                    if vs == vs_old:
+                        print("-----> SWITCH PLAYER")
+                        print(vs)
+
                         switch_bool = True
                         break
                     # else:
                     #     switch_bool = True
                     #     break
                 if switch_bool == True:
+
                     player_two_dico = self.new_matchs_temp_no_sorted[i][1]
                     player_third_dico = self.new_matchs_temp_no_sorted[i + 1][0]
 
@@ -172,7 +179,7 @@ class AlgoSuisse:
 
         matchs = []
         for i, new_match in enumerate(self.new_matchs_temp_no_sorted, 0):
-            # print(str(new_match[0]["player_object"].tournament_ranking) + "    " + str(new_match[1]["player_object"].tournament_ranking))
+            #print(str(new_match[0]["player_object"].tournament_ranking) + "    " + str(new_match[1]["player_object"].tournament_ranking))
             # CREATE MATCH
             match = Match([new_match[0]["player_object"], 0], [new_match[1]["player_object"], 0])
             matchs.append(match)

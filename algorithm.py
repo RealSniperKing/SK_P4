@@ -70,11 +70,14 @@ class AlgoSuisse:
         all_scores = []
         for match in matchs:
             p_one, p_two = match.serialized_infos()
+            p_one["Tournament ranking"] = p_one['player_object'].tournament_ranking
+            p_two["Tournament ranking"] = p_two['player_object'].tournament_ranking
+
             players_infos_to_sort.append(p_one)
             players_infos_to_sort.append(p_two)
 
-            all_scores.append(p_one["player_score"])
-            all_scores.append(p_two["player_score"])
+            all_scores.append(p_one['player_object'].tournament_ranking)
+            all_scores.append(p_two['player_object'].tournament_ranking)
 
         all_scores_without_double = list(reversed(sorted(set(all_scores))))  # Delete double, sort, invert
         players_infos_sorted = list(reversed(sorted(players_infos_to_sort, key=lambda x: x['player_object'].tournament_ranking)))
@@ -88,8 +91,8 @@ class AlgoSuisse:
         # SORT EACH VALUE FROM PLAYER_RANKING COLUMN
         dataframes = []
         for d_value in all_scores_without_double:
-            mask = df['player_score'] == d_value
-            #print(df[mask])
+            mask = df['Tournament ranking'] == d_value
+            # print(df[mask])
             dataframes.append(df[mask].sort_values(by='player_ranking'))
 
         self.sorted_dataframe = pd.concat(dataframes).reset_index(drop=True)  # Merge dataframes and reset index

@@ -22,7 +22,7 @@ class Round:
 
     def start(self):
         self.date_start = get_curent_date_time()
-        print("------ START ------ " + self.date_start)
+        # print("------ START ------ " + self.date_start)
         return self
 
     def play(self, time_value):
@@ -35,7 +35,8 @@ class Round:
 
     def end(self):
         self.date_end = get_curent_date_time()
-        print("------ END ------ " + self.date_end)
+        # print("------ END ------ " + self.date_end)
+
         return self
 
     def matchs(self):

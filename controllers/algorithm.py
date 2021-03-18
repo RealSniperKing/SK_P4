@@ -4,8 +4,8 @@ import operator
 import numpy as np
 import pandas as pd
 
-from models.player_model import Player
-from models.match import Match
+from models.class_player_model import Player
+from models.class_match import Match
 
 #https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html
 
@@ -103,7 +103,6 @@ class AlgoSuisse:
     def get_matchs_historic(self, rounds):
         # GENERATE PLAYERS GAMES HISTORIC FROM ALL MATCH
         matchs_historic = []
-        print("len round = " + str(len(rounds)))
 
         for round in rounds:
         # matchs = rounds[len(rounds) - 1].matchs()

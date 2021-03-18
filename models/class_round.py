@@ -40,10 +40,4 @@ class Round:
         return self
 
     def matchs(self):
-        players_scores = []
-
-        # for match in self.list_matchs:
-        #     for data in match.datas:
-        #         players_scores.append(data)
-
         return self.list_matchs

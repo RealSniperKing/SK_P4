@@ -32,6 +32,7 @@ def print_dico_items(serialized_player):
 
 
 def convert_dico_to_df(dico):
+    print("=====================================")
     df = pd.DataFrame(dico)
     print(df)
 

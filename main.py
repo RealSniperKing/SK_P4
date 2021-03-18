@@ -1,7 +1,7 @@
 # coding: utf-8
 
 # import logging as lg
-from inputs_operations import main_menu_actions
+from views.inputs_operations import main_menu_actions
 
 
 class Main:

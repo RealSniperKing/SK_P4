@@ -2,7 +2,7 @@
 
 from os import system, name
 import json
-
+import pandas as pd
 # --- DISPLAY ---
 
 
@@ -27,3 +27,9 @@ def print_dico_items(serialized_player):
     text = json.dumps(serialized_player, indent=4)
 
     return text
+
+
+def convert_dico_to_df(dico):
+    df = pd.DataFrame(dico)
+    print(df)
+

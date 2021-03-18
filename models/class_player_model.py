@@ -17,6 +17,9 @@ class Player():
         return self
 
     def serialized(self):
-        self.serialized_player_var = {"name": self.name, "firstname": self.firstname, "birthday": str(self.birthday),
-                                 "gender": self.gender, "ranking": self.ranking}
+        self.serialized_player_var = {"name": self.name,
+                                      "firstname": self.firstname,
+                                      "birthday": str(self.birthday),
+                                      "gender": self.gender,
+                                      "ranking": self.ranking}
         return self.serialized_player_var

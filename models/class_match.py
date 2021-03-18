@@ -23,7 +23,8 @@ class Match:
             player_object = data[0]
             player_score = data[1]
 
-            dico = {"player_object": player_object, "player_score": player_score,
+            dico = {"player_object": player_object,
+                    "player_score": player_score,
                     "player_ranking": player_object.ranking}
             infos.append(dico)
 

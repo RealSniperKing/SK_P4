@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from display_operations import print_dico_items, clear
+from display_operations import print_dico_items, clear, convert_dico_to_df
 from inputs_operations import main_menu_actions, inputs_add_player, inputs_add_tournament,\
     dialog_box_to_confirm_or_cancel
 
@@ -117,10 +117,19 @@ def show_round_result(round):
         players_list.append(p_one)
         players_list.append(p_two)
 
-    print(round.name)
+    list_results = []
     for player in players_list:
-        print(str(player["player_object"].tournament_ranking) + "   " +
-              str(str(player["player_object"].name)) + "    " + str(player["player_score"]))
+        dico_print = {}
+        dico_print["Tournament ranking"] = player["player_object"].tournament_ranking
+        dico_print["Round"] = round.name
+
+        dico_print["Name"] = player["player_object"].name
+        dico_print["First name"] = player["player_object"].firstname
+        dico_print["Default ranking"] = player["player_object"].ranking
+        list_results.append(dico_print)
+
+    convert_dico_to_df(list_results)
+
 def start_game():
     """ Start directly game without menu"""
 
@@ -145,7 +154,7 @@ def start_game():
 
     # ROUND1
     first_round = Round(matchs, "Round 1")
-    show_round_result(first_round)
+    # show_round_result(first_round)
 
     tournament.add_round_in_rounds(first_round)
     first_round.start().play(1).end()
@@ -164,17 +173,11 @@ def start_game():
             .apply_first_player_condition()
 
         new_round = Round(matchs, "Round " + str(rounds_count + 1))
-        show_round_result(new_round)
 
         tournament.add_round_in_rounds(new_round)
-
         new_round.start().play(1).end()
-
         show_round_result(new_round)
+
         rounds_count = len(tournament.rounds)
-
-    #     print("....")
-    #     algo.second_sort(last_round).second_pairing(tournament.rounds)
-
 
 start_game()

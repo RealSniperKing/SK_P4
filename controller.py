@@ -120,11 +120,14 @@ def show_round_result(round):
     list_results = []
     for player in players_list:
         dico_print = {}
-        dico_print["Tournament ranking"] = player["player_object"].tournament_ranking
         dico_print["Round"] = round.name
-
         dico_print["Name"] = player["player_object"].name
         dico_print["First name"] = player["player_object"].firstname
+
+        dico_print["Tournament ranking"] = player["player_object"].tournament_ranking
+        dico_print["Before this round"] = player["player_object"].tournament_ranking - player["player_score"]
+        dico_print["Player Score"] = player["player_score"]
+
         dico_print["Default ranking"] = player["player_object"].ranking
         list_results.append(dico_print)
 

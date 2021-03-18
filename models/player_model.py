@@ -10,6 +10,12 @@ class Player():
 
         self.serialized_player_var = {}
 
+        self.tournament_ranking = 0
+
+    def add_match_result(self, value):
+        self.tournament_ranking += value
+        return self
+
     def serialized(self):
         self.serialized_player_var = {"name": self.name, "firstname": self.firstname, "birthday": str(self.birthday),
                                  "gender": self.gender, "ranking": self.ranking}

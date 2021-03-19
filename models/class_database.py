@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from tinydb import TinyDB, Query, where
+from tinydb import TinyDB, Query
 from pathlib import Path
 
 from basics_operations import add_folder
@@ -8,18 +8,12 @@ from basics_operations import add_folder
 
 def create_db_folder():
     base_dir_script = Path.cwd()
-    # GET 'BDD' FOLDER
     try:
         path_bdd_directory = add_folder(base_dir_script, 'BDD')
     except:
         path_bdd_directory = ""
+
     return path_bdd_directory
-
-
-
-
-# class DBTable:
-#     def __init__(self, name):
 
 class Database:
     def __init__(self, path, name):
@@ -58,6 +52,47 @@ class Database:
 
         print(test)
 
+    def update_item(self, name, dico_t):
+        id_dico = -1
+        print(self.current_table_object.count)
+        for i, dico in enumerate(self.current_table_object.all(), 1):
+            if dico["name"] == name:
+                id_dico = i
+        print(id_dico)
+        if id_dico != -1:
+
+            self.current_table_object.update(dico_t, doc_ids=[id_dico])
+
+            print(self.current_table_object.all())
+
+    def remove_item(self, name):
+        id_dico = -1
+        db = self.current_table_object
+        User = Query()
+        contains_result = db.contains(User.name == 'Tournoi de test')
+        count_result = db.count(User.name == 'Tournoi de test')
+        print(contains_result)
+        print(count_result)
+
+        doc = db.get(User.name == 'Tournoi de test')
+        print(doc)
+
+        item_id = doc.doc_id
+        print(item_id)
+        if db.contains(doc_id=item_id):
+            db.remove(doc_ids=[item_id])
+
+        #print(self.current_table_object.all())
+
+
+        # Test = Query()
+        # el = self.current_table_object.get(Test.name == 'name')
+        # print(el)
+
+        # print(self.current_table_object.contains(doc_id=id_dico))
+        # if id_dico != -1:
+        #     self.current_table_object.remove(doc_ids=[id_dico])
+
     def set_current_table_name(self, value):
         self.current_table_name = value
 
@@ -66,3 +101,5 @@ class Database:
     def get_all_items_in_current_table(self):
         items = self.current_table_object.all()
         return items
+
+

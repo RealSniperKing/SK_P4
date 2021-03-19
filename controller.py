@@ -1,16 +1,16 @@
 # coding: utf-8
 
-from display_operations import print_dico_items, clear, convert_dico_to_df
-from inputs_operations import main_menu_actions, inputs_add_player, inputs_add_tournament,\
+from views.display_operations import print_dico_items, clear, convert_dico_to_df
+from views.inputs_operations import inputs_add_player, inputs_add_tournament,\
     dialog_box_to_confirm_or_cancel
 
-from models.player_model import Player
-from models.tournament_model import Tournament
+from models.class_player_model import Player
+from models.class_tournament_model import Tournament
 
-from db_operations import create_db_folder, Database
+from models.class_database import create_db_folder, Database
 
-from algorithm import AlgoSuisse
-from models.round import Round
+from controllers.algorithm import AlgoSuisse
+from models.class_round import Round
 
 
 # DATABASE --------------------------------------------------
@@ -39,8 +39,8 @@ def add_player_in_db():
 
         # ADD SERIALIZED PLAYERS OBJECTS
         database_object.insert_serialized_objects_in_current_table([serialized_player])
-    else:
-        main_menu_actions()
+    # else:
+    #     main_menu_actions()
 
 
 def add_tournament_in_db():
@@ -72,21 +72,6 @@ def add_tournament_in_db():
 
         # ADD SERIALIZED PLAYERS OBJECTS
         database_object.insert_serialized_objects_in_current_table([serialized_tournament])
-    else:
-        main_menu_actions()
-
-
-def load_all_items_from_db_table(table_name):
-    # CREATE OR ACCES TO DIRECTORY
-    path_bdd = create_db_folder()
-
-    # CREATE OR LOAD DATABASE
-    database_object = Database(path_bdd, "database")
-
-    # CREATE OR LOAD PLAYERS
-    database_object.create_or_load_table_name(table_name)
-
-    return database_object
 
 
 def search_element_in_db():
@@ -133,18 +118,22 @@ def show_round_result(round):
 
     convert_dico_to_df(list_results)
 
+
 def start_game():
     """ Start directly game without menu"""
 
     # LOAD TOURNAMENT
-    database_object = load_all_items_from_db_table('tournaments')
+    path_bdd = create_db_folder()
+    database_object = Database(path_bdd, "database").create_or_load_table_name('tournaments')
     serialized_tournaments = database_object.get_all_items_in_current_table()
 
     # TODO OPTION TO CHOICE THE TOURNAMENT
     st = serialized_tournaments[0]
-    #print(st)
     tournament = Tournament(st["name"], st["place"], st["duration"], st["dates"], st["turns"], st["rounds"],
                             st["players_count"], st["players"], st["time_control"], st["description"])
+
+    #database_object.remove_item(tournament.name)
+
     # LOAD PLAYERS
     database_object.create_or_load_table_name('players')
 
@@ -160,27 +149,28 @@ def start_game():
     # show_round_result(first_round)
 
     tournament.add_round_in_rounds(first_round)
-    first_round.start().play(1).end()
+    first_round.start().play(0).end()
 
     show_round_result(first_round)
 
     # OTHERS ROUNDS
-    print("len rounds = " + str(len(tournament.rounds)))
     last_round = first_round
     rounds_count = len(tournament.rounds)
-
     while rounds_count != tournament.turns:
-        print("=====================================")
-        print("=====================================")
         matchs = algo.second_sort(last_round).get_matchs_historic(tournament.rounds).second_pairing() \
             .apply_first_player_condition()
 
         new_round = Round(matchs, "Round " + str(rounds_count + 1))
 
         tournament.add_round_in_rounds(new_round)
-        new_round.start().play(1).end()
+        new_round.start().play(0).end()
+
         show_round_result(new_round)
 
         rounds_count = len(tournament.rounds)
 
-start_game()
+    # print("write tournament")
+    # print(tournament.serialized())
+    # database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
+
+#start_game()

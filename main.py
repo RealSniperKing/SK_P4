@@ -1,15 +1,15 @@
 # coding: utf-8
 
 from views.display_operations import show_menu, clear
-# from views.inputs_operations import inputs_add_player
+from views.inputs_operations import input_players_number, dialog_box_to_confirm_or_cancel
 
-from controller import add_player_in_db, add_tournament_in_db, analyze_tournaments, start_game
+from controller import add_player_in_db, add_tournament_in_db, analyze_tournaments, analyze_players, start_game
 # from pynput.keyboard import Key, Controller
 
 class UI:
     def __init__(self):
         self.main_menu_actions()
-
+        self.select_tournament = None
     def main_menu_actions(self):
         """ Display main menu and control calls to actions """
         choice = "0"
@@ -82,15 +82,17 @@ class UI:
             choice = show_menu("GAME - MENU", ''.join(choices.values()))
 
         if choice == "1":
-            self.menu_start_a_game(analyze_tournaments("tournaments"))
-            #self.menu_game_actions()
+
+            self.menu_start_a_game()
+            self.menu_game_actions()
 
         elif choice == "2":
             self.menu_game_actions()
         elif choice == "4":
             self.main_menu_actions()
 
-    def menu_start_a_game(self, choices):
+    def menu_start_a_game(self):
+        choices, tournaments_list = analyze_tournaments("tournaments")
         choice = "0"
         cancel_id = str(len(choices) + 1)
 
@@ -99,11 +101,37 @@ class UI:
         while choice not in list(choices):
             choice = show_menu("RUN - TOURNAMENT", ''.join(choices.values()), False)
 
-        print("choice = " + str(choice))
-        print("cancel_id = " + str(cancel_id))
+        if choice in choices and choice != cancel_id:
+            tournament = tournaments_list[int(choice) - 1]
+            # INPUT PLAYERS
+            self.select_tournament = tournament
+            self.menu_select_players()
 
-        if choice in choices and len(choices) > 1:
-            start_game()
+    def menu_select_players(self):
+        players_max = input_players_number()
+        choices, players_objects = analyze_players("players")
+        choice = "0"
+        cancel_id = str(len(choices) + 1)
+
+        players_to_party = []
+        players_object_to_party = []
+        while len(players_to_party) != players_max:
+            clear()
+            print("Players list :")
+            print(players_to_party)
+            while choice not in list(choices):
+                choice = show_menu("IMPORT - PLAYERS", ''.join(choices.values()), False)
+
+            if choice in choices and len(choices) > 1:
+                if choice not in players_to_party:
+                    players_to_party.append(choice)
+                    players_object_to_party.append(players_objects[int(choice) - 1])
+            choice = "0"
+
+        print(players_to_party)
+        confirm = dialog_box_to_confirm_or_cancel("Are you sure to start this tournament ?\n")
+        if confirm:
+            start_game(self.select_tournament, players_object_to_party)
 
 if __name__ == '__main__':
     UI()

@@ -4,10 +4,13 @@ from tinydb import TinyDB, Query
 from pathlib import Path
 
 from basics_operations import add_folder
-
+import os, sys
 
 def create_db_folder():
-    base_dir_script = Path.cwd()
+    #base_dir_script = Path.cwd()
+    script_path = sys.argv[0]
+    base_dir_script = os.path.dirname(script_path)
+
     try:
         path_bdd_directory = add_folder(base_dir_script, 'BDD')
     except:

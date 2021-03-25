@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from views.display_operations import show_menu, clear
-from views.inputs_operations import input_players_number, dialog_box_to_confirm_or_cancel
+from views.inputs_operations import ask_user, dialog_box_to_confirm_or_cancel
 
 from controller import add_player_in_db, add_tournament_in_db, analyze_tournaments, analyze_players, start_game
 # from pynput.keyboard import Key, Controller
@@ -108,10 +108,10 @@ class UI:
             self.menu_select_players()
 
     def menu_select_players(self):
-        players_max = input_players_number()
+        players_max = ask_user('Enter players number', int, "8")
         choices, players_objects = analyze_players("players")
         choice = "0"
-        cancel_id = str(len(choices) + 1)
+        # cancel_id = str(len(choices) + 1)
 
         players_to_party = []
         players_object_to_party = []

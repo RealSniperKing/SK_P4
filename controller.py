@@ -98,7 +98,28 @@ def analyze_tournaments(table_name):
         for i, t in enumerate(empty_tournaments, 1):
             choices[str(i)] = "- Enter " + str(i) + " to run : " + t.name + " | " + t.place + "\n"
 
-    return choices
+    return choices, empty_tournaments
+
+
+def analyze_players(table_name):
+    # CREATE OR LOAD DATABASE
+    path_bdd = create_db_folder()
+
+    choices = {}
+    if os.path.isdir(path_bdd):
+        database_object = Database(path_bdd, "database").create_or_load_table_name(table_name)
+
+        players = database_object.get_all_items_in_current_table()
+
+        players_objects = []
+        for sp in players:
+            player = Player(sp["name"], sp["firstname"], sp["birthday"], sp["gender"], sp["ranking"])
+            players_objects.append(player)
+
+        for i, p in enumerate(players_objects, 1):
+            choices[str(i)] = "- Enter " + str(i) + " to add : " + p.name + " " + p.firstname + "\n"
+
+    return choices, players_objects
 
 
 def search_element_in_db():
@@ -112,10 +133,6 @@ def search_element_in_db():
 
 
 # GAME ACTIONS --------------------------------------------------
-
-def start_new_tournament():
-    print("START NEW TOURNAMENT")
-    #t = Tournament()
 
 def show_rounds_result(rounds):
     for round in rounds:
@@ -142,25 +159,16 @@ def show_rounds_result(rounds):
         convert_dico_to_df(list_results)
 
 
-def start_game():
+def start_game(tournament, players):
     """ Start directly game without menu"""
+    print(players)
 
     # LOAD TOURNAMENT
     path_bdd = create_db_folder()
     database_object = Database(path_bdd, "database").create_or_load_table_name('tournaments')
-    serialized_tournaments = database_object.get_all_items_in_current_table()
-
-    # TODO OPTION TO CHOICE THE TOURNAMENT
-    st = serialized_tournaments[0]
-    tournament = Tournament(st["name"], st["place"], st["duration"], st["dates"], st["turns"], st["rounds"],
-                            st["players"], st["time_control"], st["description"])
-
-    #database_object.remove_item(tournament.name)
-
-    # LOAD PLAYERS
-    database_object.create_or_load_table_name('players')
 
     # TODO OPTION TO EXTRACT 8 PLAYERS FROM BDD = serialized_players
+    database_object.create_or_load_table_name('players')
     serialized_players = database_object.get_all_items_in_current_table()
 
     algo = AlgoSuisse(serialized_players)
@@ -190,6 +198,8 @@ def start_game():
         rounds_count = len(tournament.rounds)
 
     show_rounds_result(tournament.rounds)
+
+    input("Press Enter to continue...")
     # print("write tournament")
     # print(tournament.serialized())
     # database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())

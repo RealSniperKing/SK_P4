@@ -10,8 +10,8 @@ from models.class_match import Match
 #https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html
 
 class AlgoSuisse:
-    def __init__(self, serialized_players):
-        self.serialized_players = serialized_players
+    def __init__(self, players_ob):
+        self.players_ob = players_ob
 
         self.sorted_dataframe = None
         self.round = None
@@ -21,43 +21,29 @@ class AlgoSuisse:
         self.new_matchs_temp_sorted = None
         self.new_matchs_temp_no_sorted = None
 
-    def sort_players_by(self, key):
-        self.serialized_players.sort(key=operator.itemgetter(key))  # Sorted dictionaries
-
     def first_sort(self):
         """ 1. Au début du premier tour, triez tous les joueurs en fonction de leur classement. """
-        self.sort_players_by('ranking')
+
+        sorted_players = sorted(self.players_ob, key=lambda x: x.ranking)
 
         """ 2. Divisez les joueurs en deux moitiés, une supérieure et une inférieure. Le meilleur joueur de la moitié 
         supérieure est jumelé avec le meilleur joueur de la moitié inférieure, et ainsi de suite. """
-        len_dico = len(self.serialized_players)
+        len_dico = len(self.players_ob)
         len_half = int(len_dico / 2)
-        df2 = pd.DataFrame(self.serialized_players)  # split_up = df2[0:len_half]  # split_down = df2[4:len_dico]
 
         matchs = []
-        players = []
         # ASSIGN OPPONENT TO TOP HALF PART
         for i in range(0, len_half):
-            sub_df = df2.iloc[[i, i + len_half], [0, 1, 2, 3, 4]]
-
-            players_and_scores = [] * 2  # This list contain 2 players
-            for index, row in sub_df.iterrows():
-                dico = row.to_dict()
-                # CREATE PLAYER OBJECT
-                player = Player(dico["name"], dico["firstname"], dico["birthday"], dico["gender"], dico["ranking"])
-
-                if player not in players:
-                    players.append(player)
-                score = 0
-                players_and_scores.append([player, score])
+            player_a = [sorted_players[i], 0]
+            player_b = [sorted_players[i + len_half], 0]
 
             # CREATE MATCH
-            match = Match(players_and_scores[0], players_and_scores[1])
+            match = Match(player_a, player_b)
+
             # ADD MATCH IN MATCHS LIST
             matchs.append(match)
 
-        # print(players)
-        return matchs, players
+        return matchs
 
     def second_sort(self, round):
         """ 3. Triez tous les joueurs en fonction de leur nombre total de points. Si plusieurs

@@ -135,6 +135,7 @@ def search_element_in_db():
 # GAME ACTIONS --------------------------------------------------
 
 def show_rounds_result(rounds):
+    # TODO A DEBUG
     for round in rounds:
         players_list = []
         for match in round.matchs():
@@ -161,19 +162,10 @@ def show_rounds_result(rounds):
 
 def start_game(tournament, players):
     """ Start directly game without menu"""
-    print(players)
+    tournament.set_players(players)  # init players list
 
-    # LOAD TOURNAMENT
-    path_bdd = create_db_folder()
-    database_object = Database(path_bdd, "database").create_or_load_table_name('tournaments')
-
-    # TODO OPTION TO EXTRACT 8 PLAYERS FROM BDD = serialized_players
-    database_object.create_or_load_table_name('players')
-    serialized_players = database_object.get_all_items_in_current_table()
-
-    algo = AlgoSuisse(serialized_players)
-    matchs, players_objects = algo.first_sort()
-    tournament.set_players(players_objects)  # init players list
+    algo = AlgoSuisse(players)
+    matchs = algo.first_sort()
 
     # ROUND1
     first_round = Round(matchs, "Round 1")
@@ -186,6 +178,7 @@ def start_game(tournament, players):
     # OTHERS ROUNDS
     last_round = first_round
     rounds_count = len(tournament.rounds)
+
     while rounds_count != tournament.turns:
         matchs = algo.second_sort(last_round).get_matchs_historic(tournament.rounds).second_pairing() \
             .apply_first_player_condition()
@@ -197,7 +190,9 @@ def start_game(tournament, players):
 
         rounds_count = len(tournament.rounds)
 
-    show_rounds_result(tournament.rounds)
+        show_rounds_result([new_round])
+
+    # show_rounds_result(tournament.rounds)
 
     input("Press Enter to continue...")
     # print("write tournament")

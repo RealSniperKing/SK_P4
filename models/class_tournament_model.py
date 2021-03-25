@@ -1,8 +1,8 @@
 # coding: utf-8
+import ast
 
 class Tournament:
-    def __init__(self, name, place, duration, dates, turns, rounds,
-                 players_count, players, time_control, description):
+    def __init__(self, name, place, duration, dates, turns, rounds, players, time_control, description):
         # WHERE
         self.name = name
         self.place = place
@@ -14,9 +14,8 @@ class Tournament:
         # RULES
         self.turns = turns
         self.rounds = rounds
-
-        self.players_count = players_count
         self.players = players
+        self.players_count = len(players)
 
         self.time_control = time_control
         self.description = description
@@ -31,7 +30,6 @@ class Tournament:
                                       "dates": self.dates,
                                       "turns": self.turns,
                                       "rounds": self.rounds,
-                                      "players_count": self.players_count,
                                       "players": self.players,
                                       "time_control": self.time_control,
                                       "description": self.description}

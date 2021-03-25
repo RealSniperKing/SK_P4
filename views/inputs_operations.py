@@ -87,13 +87,12 @@ def inputs_add_tournament():
     turns = ask_user('Enter number of turns', int, "4")
     rounds = []
 
-    players_count = 8
     players = []
 
     time_control = ask_user("Enter 1 for Bullet.\nEnter 2 for Blitz.\nEnter 3 for Coup Rapide\n", int, "1")
     description = ask_user('Enter a description', str, "blabla")
 
-    return name, place, duration, dates, turns, rounds, players_count, players, time_control, description
+    return name, place, duration, dates, turns, rounds, players, time_control, description
 
 
 

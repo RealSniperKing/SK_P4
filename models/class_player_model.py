@@ -6,7 +6,7 @@ class Player():
         self.firstname = firstname
         self.birthday = birthday
         self.gender = gender
-        self.ranking = ranking
+        self.ranking = int(ranking)
 
         self.serialized_player_var = {}
 
@@ -23,3 +23,4 @@ class Player():
                                       "gender": self.gender,
                                       "ranking": self.ranking}
         return self.serialized_player_var
+

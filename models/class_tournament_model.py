@@ -1,8 +1,11 @@
 # coding: utf-8
 import ast
 
+from .class_player_model import Player
+
 class Tournament:
-    def __init__(self, name, place, duration, dates, turns, rounds, players, time_control, description):
+    def __init__(self, name, place, duration, dates, turns, rounds, players,
+                 time_control, description):
         # WHERE
         self.name = name
         self.place = place
@@ -24,13 +27,40 @@ class Tournament:
         self.serialized_tournament = None
 
     def serialized(self):
+        # SERIALIZED PLAYERS
+        serialized_players = []
+        for player in self.players:
+            serialized_player = player.serialized()
+            serialized_players.append(serialized_player)
+
+        # SERIALIZED ROUNDS AND MATCHS
+        print("---tournament rounds len = " + str(len(self.rounds)))
+
+        serialized_rounds = []
+        for round in self.rounds:
+            round_serialized = []
+            for match in round.matchs():
+                match_temp = match.serialized_infos()
+
+                for item in match_temp:
+                    item["player_object"] = item["player_object"].serialized()
+                print("match_temp = " + str(match_temp))
+
+                round_serialized.append(match_temp)
+            serialized_rounds.append(round_serialized)
+
+        print("--------------------------------")
+        for round_s in serialized_rounds:
+            for match_s in round_s:
+                print(match_s)
+
         self.serialized_tournament = {"name": self.name,
                                       "place": self.place,
                                       "duration": self.duration,
                                       "dates": self.dates,
                                       "turns": self.turns,
-                                      "rounds": self.rounds,
-                                      "players": self.players,
+                                      "rounds": serialized_rounds,
+                                      "players": serialized_players,
                                       "time_control": self.time_control,
                                       "description": self.description}
         return self.serialized_tournament

@@ -8,6 +8,10 @@ from basics_operations import get_curent_date_time, date_type, convert_string_to
 # --- MENUS ---
 
 
+def press_key_to_continue():
+    input("Press Enter to continue...")
+
+
 def dialog_box_to_confirm_or_cancel(title):
     choice = "0"
     choices = {"1": "- Enter 1 to Confirm\n",

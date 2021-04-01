@@ -2,6 +2,14 @@
 import ast
 
 from .class_player_model import Player
+def convert_matchs_instances_to_dico(round_matchs):
+    matchs_serialized = []
+    for match in round_matchs:
+        match_temp = match.serialized_infos()
+        for item in match_temp:
+            item["player_object"] = item["player_object"].serialized()
+        matchs_serialized.append(match_temp)
+    return matchs_serialized
 
 class Tournament:
     def __init__(self, name, place, duration, dates, turns, rounds, players,
@@ -38,13 +46,8 @@ class Tournament:
         for round in self.rounds:
             round_srz = round.serialized()
             round_matchs = round_srz["matchs"]
-            matchs_serialized = []
-            for match in round_matchs:
-                match_temp = match.serialized_infos()
-                for item in match_temp:
-                    item["player_object"] = item["player_object"].serialized()
-                matchs_serialized.append(match_temp)
-            round_srz["matchs"] = matchs_serialized
+
+            round_srz["matchs"] = convert_matchs_instances_to_dico(round_matchs)
             serialized_rounds.append(round_srz)
 
         self.serialized_tournament = {"name": self.name,

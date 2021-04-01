@@ -186,9 +186,10 @@ class UI:
             self.menu_game_report()
         elif choice == "3":
             report_game(self.select_tournament, int(choice))
-            self.menu_game_actions()
+            self.menu_game_report()
         elif choice == "4":
-            self.menu_game_actions()
+            report_game(self.select_tournament, int(choice))
+            self.menu_game_report()
         elif choice == "5":
             self.menu_game_actions()
 

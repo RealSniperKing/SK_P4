@@ -76,29 +76,39 @@ def add_tournament_in_db():
         database_object.insert_serialized_objects_in_current_table([serialized_tournament])
 
 
-def analyze_tournaments(table_name):
-    # CREATE OR LOAD DATABASE
+def analyze_tournaments(table_name, mode):
+    # mode 0 = empty / mode 1 = in progress / mode 2 = completed
     path_bdd = create_db_folder()
-
     choices = {}
     if os.path.isdir(path_bdd):
-        database_object = Database(path_bdd, "database").create_or_load_table_name(table_name)
+        database_object = Database(path_bdd, "database")\
+            .create_or_load_table_name(table_name)
 
         tournaments = database_object.get_all_items_in_current_table()
 
-        empty_tournaments = []
+        return_tournaments = []
         for st in tournaments:
             tournament = Tournament(st["name"], st["place"], st["duration"],
                                     st["dates"], st["turns"], st["rounds"],
                                     st["players"], st["time_control"],
                                     st["description"])
-            if not tournament.rounds:
-                empty_tournaments.append(tournament)
+            if mode == 0:
+                if not tournament.rounds:
+                    return_tournaments.append(tournament)
 
-        for i, t in enumerate(empty_tournaments, 1):
-            choices[str(i)] = "- Enter " + str(i) + " to run : " + t.name + " | " + t.place + "\n"
+            if mode == 1:
+                if len(tournament.rounds) > tournament.turns and len(tournament.rounds) < tournament.turns:
+                    return_tournaments.append(tournament)
 
-    return choices, empty_tournaments
+            if mode == 2:
+                if len(tournament.rounds) == tournament.turns:
+                    return_tournaments.append(tournament)
+
+        for i, t in enumerate(return_tournaments, 1):
+            choices[str(i)] = "- Enter " + str(i) + " to run : " + t.name +\
+                              " | " + t.place + "\n"
+
+    return choices, return_tournaments
 
 
 def analyze_players(table_name):
@@ -111,16 +121,49 @@ def analyze_players(table_name):
 
         players = database_object.get_all_items_in_current_table()
 
-        players_objects = []
-        for sp in players:
-            player = Player(sp["name"], sp["firstname"], sp["birthday"], sp["gender"], sp["ranking"])
-            players_objects.append(player)
+        players_objects = convert_serialized_players_to_instances(players)
 
         for i, p in enumerate(players_objects, 1):
             choices[str(i)] = "- Enter " + str(i) + " to add : " + p.name + " " + p.firstname + "\n"
 
     return choices, players_objects
 
+def convert_serialized_players_to_instances(players):
+    players_objects = []
+    for sp in players:
+        player = Player(sp["name"], sp["firstname"], sp["birthday"],
+                        sp["gender"], sp["ranking"])
+        players_objects.append(player)
+    return players_objects
+
+def convert_players_instances_to_dico(players):
+    players_dico = []
+    for player in players:
+        players_dico.append(player.serialized())
+    return players_dico
+
+def report_game(tournament, mode):
+    # mode 1 = print players by alphabetical order
+    # mode 2 = print players by ranking
+    # mode 3 = print rounds
+    # mode 4 = print matchs
+
+    if mode == 1 or mode == 2:
+        players = convert_serialized_players_to_instances(tournament.players)
+        if mode == 1:
+            players = sorted(players, key=lambda x: x.name)
+        elif mode == 2:
+            players = sorted(players, key=lambda x: x.ranking)
+        convert_dico_to_df(convert_players_instances_to_dico(players))
+
+    if mode == 3:
+        print("mode == 3")
+        rounds = tournament.rounds
+        for round in rounds:
+            print(round)
+
+    if mode == 4:
+        print("mode == 4")
 
 def search_element_in_db():
     # CREATE OR ACCES TO DIRECTORY
@@ -180,10 +223,8 @@ def start_game(tournament, players):
     rounds_count = len(tournament.rounds)
 
     while rounds_count != tournament.turns:
-        print("tournament rounds len = " + str(len(tournament.rounds)))
         matchs = algo.second_sort(last_round).get_matchs_historic(tournament.rounds).second_pairing() \
             .apply_first_player_condition()
-        print("matchs len = " + str(len(matchs)))
         new_round = Round(matchs, "Round " + str(rounds_count + 1))
 
         tournament.add_round_in_rounds(new_round)
@@ -201,6 +242,9 @@ def start_game(tournament, players):
 
     path_bdd = create_db_folder()
     database_object = Database(path_bdd, "database")
+
+    print("=============")
+    print(tournament.serialized())
     database_object.create_or_load_table_name('tournaments')\
         .update_item(tournament.name, tournament.serialized())
 

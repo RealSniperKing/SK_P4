@@ -2,7 +2,7 @@
 
 from views.display_operations import print_dico_items, clear, convert_dico_to_df
 from views.inputs_operations import inputs_add_player, inputs_add_tournament,\
-    dialog_box_to_confirm_or_cancel
+    dialog_box_to_confirm_or_cancel, press_key_to_continue
 
 from models.class_player_model import Player
 from models.class_tournament_model import Tournament
@@ -11,6 +11,7 @@ from models.class_database import create_db_folder, Database
 
 from controllers.algorithm import AlgoSuisse
 from models.class_round import Round
+from models.class_match import Match
 
 import os
 import os.path
@@ -88,9 +89,14 @@ def analyze_tournaments(table_name, mode):
 
         return_tournaments = []
         for st in tournaments:
-            tournament = Tournament(st["name"], st["place"], st["duration"],
-                                    st["dates"], st["turns"], st["rounds"],
-                                    st["players"], st["time_control"],
+            tournament = Tournament(st["name"],
+                                    st["place"],
+                                    st["duration"],
+                                    st["dates"],
+                                    st["turns"],
+                                    dic_tournament_to_ob(st["rounds"]),
+                                    dic_players_to_ob(st["players"]),
+                                    st["time_control"],
                                     st["description"])
             if mode == 0:
                 if not tournament.rounds:
@@ -121,14 +127,15 @@ def analyze_players(table_name):
 
         players = database_object.get_all_items_in_current_table()
 
-        players_objects = convert_serialized_players_to_instances(players)
+        players_objects = dic_players_to_ob(players)
 
         for i, p in enumerate(players_objects, 1):
             choices[str(i)] = "- Enter " + str(i) + " to add : " + p.name + " " + p.firstname + "\n"
 
     return choices, players_objects
 
-def convert_serialized_players_to_instances(players):
+
+def dic_players_to_ob(players):
     players_objects = []
     for sp in players:
         player = Player(sp["name"], sp["firstname"], sp["birthday"],
@@ -136,34 +143,75 @@ def convert_serialized_players_to_instances(players):
         players_objects.append(player)
     return players_objects
 
+
+def dic_tournament_to_ob(rounds):
+    print("............tournaments............")
+    rounds_ob = []
+    for round in rounds:
+        list_matchs = []
+        for match in round['matchs']:
+            player_a_ob = match[0]['player_object']
+            player_a_ob_array = dic_players_to_ob([player_a_ob])
+
+            player_a_score = match[0]['player_score']
+
+            player_b_ob = match[1]['player_object']
+            player_b_ob_array = dic_players_to_ob([player_b_ob])
+
+            player_b_score = match[1]['player_score']
+
+            match_ob = Match([player_a_ob_array[0], player_a_score],
+                             [player_b_ob_array[0], player_b_score])
+
+            list_matchs.append(match_ob)
+        round_ob = Round(list_matchs, round['name'])
+        round_ob.date_start = round['date_start']
+        round_ob.date_end = round['date_end']
+
+        rounds_ob.append(round_ob)
+
+    return rounds_ob
+
+
 def convert_players_instances_to_dico(players):
     players_dico = []
     for player in players:
         players_dico.append(player.serialized())
     return players_dico
 
-def report_game(tournament, mode):
-    # mode 1 = print players by alphabetical order
-    # mode 2 = print players by ranking
-    # mode 3 = print rounds
-    # mode 4 = print matchs
 
+def report_game(tournament, mode):
     if mode == 1 or mode == 2:
-        players = convert_serialized_players_to_instances(tournament.players)
-        if mode == 1:
+        players = tournament.players
+        if mode == 1:  # print players by alphabetical order
             players = sorted(players, key=lambda x: x.name)
-        elif mode == 2:
+        elif mode == 2:  # print players by ranking
             players = sorted(players, key=lambda x: x.ranking)
         convert_dico_to_df(convert_players_instances_to_dico(players))
 
-    if mode == 3:
-        print("mode == 3")
+    if mode == 3:  # print rounds
         rounds = tournament.rounds
+        dicos_rounds = []
         for round in rounds:
-            print(round)
+            round_infos = round.serialized()
+            round_matchs = round_infos['matchs']
 
-    if mode == 4:
+            versus = []
+            for match in round_matchs:
+                match_temp = match.serialized_infos()
+                vs = match_temp[0]["player_object"].name + "|" + match_temp[1]["player_object"].name
+                versus.append(vs)
+            del round_infos['matchs']
+
+            for i, match_vs in enumerate(versus, 1):
+                round_infos['match ' + str(i)] = match_vs
+            dicos_rounds.append(round_infos)
+        convert_dico_to_df(dicos_rounds)
+
+    if mode == 4:  # print matchs
         print("mode == 4")
+
+    press_key_to_continue()
 
 def search_element_in_db():
     # CREATE OR ACCES TO DIRECTORY
@@ -236,7 +284,7 @@ def start_game(tournament, players):
 
     # show_rounds_result(tournament.rounds)
 
-    input("Press Enter to continue...")
+    press_key_to_continue()
     # print("write tournament")
     print(tournament.serialized())
 

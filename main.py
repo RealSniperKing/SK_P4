@@ -3,13 +3,14 @@
 from views.display_operations import show_menu, clear
 from views.inputs_operations import ask_user, dialog_box_to_confirm_or_cancel
 
-from controller import add_player_in_db, add_tournament_in_db, analyze_tournaments, analyze_players, start_game
-# from pynput.keyboard import Key, Controller
+from controller import add_player_in_db, add_tournament_in_db, \
+    analyze_tournaments, analyze_players, start_game
 
 class UI:
     def __init__(self):
         self.main_menu_actions()
         self.select_tournament = None
+
     def main_menu_actions(self):
         """ Display main menu and control calls to actions """
         choice = "0"

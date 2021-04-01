@@ -166,7 +166,7 @@ def start_game(tournament, players):
 
     algo = AlgoSuisse(players)
     matchs = algo.first_sort()
-
+    print(">matchs len = " + str(len(matchs)))
     # ROUND1
     first_round = Round(matchs, "Round 1")
 
@@ -180,9 +180,10 @@ def start_game(tournament, players):
     rounds_count = len(tournament.rounds)
 
     while rounds_count != tournament.turns:
+        print("tournament rounds len = " + str(len(tournament.rounds)))
         matchs = algo.second_sort(last_round).get_matchs_historic(tournament.rounds).second_pairing() \
             .apply_first_player_condition()
-
+        print("matchs len = " + str(len(matchs)))
         new_round = Round(matchs, "Round " + str(rounds_count + 1))
 
         tournament.add_round_in_rounds(new_round)
@@ -196,7 +197,11 @@ def start_game(tournament, players):
 
     input("Press Enter to continue...")
     # print("write tournament")
-    # print(tournament.serialized())
-    # database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
+    print(tournament.serialized())
+
+    path_bdd = create_db_folder()
+    database_object = Database(path_bdd, "database")
+    database_object.create_or_load_table_name('tournaments')\
+        .update_item(tournament.name, tournament.serialized())
 
 #analyze_tournaments("tournaments")

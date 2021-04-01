@@ -145,7 +145,7 @@ def dic_players_to_ob(players):
 
 
 def dic_tournament_to_ob(rounds):
-    print("............tournaments............")
+    # print("............tournaments............")
     rounds_ob = []
     for round in rounds:
         list_matchs = []
@@ -189,27 +189,42 @@ def report_game(tournament, mode):
             players = sorted(players, key=lambda x: x.ranking)
         convert_dico_to_df(convert_players_instances_to_dico(players))
 
-    if mode == 3:  # print rounds
+    if mode == 3 or mode == 4:  # print rounds
         rounds = tournament.rounds
-        dicos_rounds = []
+        items = []
         for round in rounds:
             round_infos = round.serialized()
             round_matchs = round_infos['matchs']
 
-            versus = []
-            for match in round_matchs:
-                match_temp = match.serialized_infos()
-                vs = match_temp[0]["player_object"].name + "|" + match_temp[1]["player_object"].name
-                versus.append(vs)
-            del round_infos['matchs']
+            if mode == 3:
+                versus = []
+                for match in round_matchs:
+                    match_temp = match.serialized_infos()
+                    vs = match_temp[0]["player_object"].name + "|" + match_temp[1]["player_object"].name
+                    versus.append(vs)
+                del round_infos['matchs']
 
-            for i, match_vs in enumerate(versus, 1):
-                round_infos['match ' + str(i)] = match_vs
-            dicos_rounds.append(round_infos)
-        convert_dico_to_df(dicos_rounds)
+                for i, match_vs in enumerate(versus, 1):
+                    round_infos['match ' + str(i)] = match_vs
+                items.append(round_infos)
 
-    if mode == 4:  # print matchs
-        print("mode == 4")
+            if mode == 4:
+                match_infos = {}
+                for match in round_matchs:
+                    match_temp = match.serialized_infos()
+                    # print(match_temp)
+                    match_infos['playerA'] = match_temp[0]["player_object"].name
+                    match_infos['scoreA'] = match_temp[0]["player_score"]
+                    match_infos['rankingA'] = match_temp[0]["player_ranking"]
+
+                    match_infos['playerB'] = match_temp[1]["player_object"].name
+                    match_infos['scoreB'] = match_temp[1]["player_score"]
+                    match_infos['rankingB'] = match_temp[0]["player_ranking"]
+
+                    items.append(match_infos)
+
+        if items:
+            convert_dico_to_df(items)
 
     press_key_to_continue()
 

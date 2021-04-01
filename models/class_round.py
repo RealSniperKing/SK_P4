@@ -20,6 +20,8 @@ class Round:
         self.date_start = None
         self.date_end = None
 
+        self.serialized_round = {}
+
     def start(self):
         self.date_start = get_curent_date_time()
         # print("------ START ------ " + self.date_start)
@@ -41,3 +43,10 @@ class Round:
 
     def matchs(self):
         return self.list_matchs
+
+    def serialized(self):
+        self.serialized_round = {"matchs": self.list_matchs,
+                                 "name": self.name,
+                                 "date_start": str(self.date_start),
+                                 "date_end": self.date_end}
+        return self.serialized_round

@@ -9,12 +9,13 @@ from models.class_tournament_model import Tournament
 
 from models.class_database import create_db_folder, Database
 
-from controllers.algorithm import AlgoSuisse
+from controllers.algorithm import Algo_suisse
 from models.class_round import Round
 from models.class_match import Match
 
 import os
 import os.path
+
 
 # DATABASE --------------------------------------------------
 
@@ -80,7 +81,7 @@ def add_tournament_in_db():
 
 
 def analyze_tournaments(table_name, mode):
-    # mode 0 = empty / mode 1 = in progress / mode 2 = completed
+    """ mode 0 = empty / mode 1 = in progress / mode 2 = completed """
     path_bdd = create_db_folder()
     choices = {}
     if os.path.isdir(path_bdd):
@@ -118,7 +119,7 @@ def analyze_tournaments(table_name, mode):
 
 
 def analyze_players(table_name):
-    # CREATE OR LOAD DATABASE
+    """ return all players objects from database """
     path_bdd = create_db_folder()
 
     choices = {}
@@ -135,7 +136,21 @@ def analyze_players(table_name):
     return choices, players_objects
 
 
+def search_element_in_db():
+    # CREATE OR ACCES TO DIRECTORY
+    path_bdd = create_db_folder()
+
+    database_object = Database(path_bdd, "database").create_or_load_table_name("tournaments")
+
+    # SEARCH ITEM IN TABLE
+    database_object.search_item_in_table('L+')
+
+
+# CONVERT --------------------------------------------------
+
+
 def dic_players_to_ob(players):
+    """ convert players dictionaries to players objects """
     players_objects = []
     for sp in players:
         player = Player(sp["name"], sp["firstname"], sp["birthday"],
@@ -145,7 +160,7 @@ def dic_players_to_ob(players):
 
 
 def dic_tournament_to_ob(rounds):
-    # print("............tournaments............")
+    """ convert rounds dictionaries to rounds objects """
     rounds_ob = []
     for round in rounds:
         list_matchs = []
@@ -179,22 +194,20 @@ def convert_players_instances_to_dico(players):
         players_dico.append(player.serialized())
     return players_dico
 
+
+# REPORT --------------------------------------------------
+
+
 def extract_matchs(round_matchs):
     items = []
     for match in round_matchs:
         match_temp = match.serialized_infos()
-        match_infos = {}
-
-        match_infos['playerA'] = match_temp[0]["player_object"].name
-        match_infos['scoreA'] = match_temp[0]["player_score"]
-        match_infos['rankingA'] = match_temp[0]["player_ranking"]
-
-        match_infos['playerB'] = match_temp[1]["player_object"].name
-        match_infos['scoreB'] = match_temp[1]["player_score"]
-        match_infos['rankingB'] = match_temp[0]["player_ranking"]
-
+        match_infos = {'playerA': match_temp[0]["player_object"].name, 'scoreA': match_temp[0]["player_score"],
+                       'rankingA': match_temp[0]["player_ranking"], 'playerB': match_temp[1]["player_object"].name,
+                       'scoreB': match_temp[1]["player_score"], 'rankingB': match_temp[0]["player_ranking"]}
         items.append(match_infos)
     return items
+
 
 def extract_rounds(round_infos, round_matchs):
     versus = []
@@ -206,8 +219,6 @@ def extract_rounds(round_infos, round_matchs):
 
     for i, match_vs in enumerate(versus, 1):
         round_infos['match ' + str(i)] = match_vs
-
-    print(round_infos)
 
     return round_infos
 
@@ -240,20 +251,10 @@ def report_game(tournament, mode):
     press_key_to_continue()
 
 
-def search_element_in_db():
-    # CREATE OR ACCES TO DIRECTORY
-    path_bdd = create_db_folder()
-
-    database_object = Database(path_bdd, "database").create_or_load_table_name("tournaments")
-
-    # SEARCH ITEM IN TABLE
-    database_object.search_item_in_table('L+')
-
-
 # GAME ACTIONS --------------------------------------------------
 
+
 def show_rounds_result(rounds):
-    # TODO A DEBUG
     for round in rounds:
         players_list = []
         for match in round.matchs():
@@ -262,7 +263,7 @@ def show_rounds_result(rounds):
             players_list.append(p_two)
 
         list_results = []
-        for player in players_list:
+        for i, player in enumerate(players_list, 0):
             dico_print = {}
             dico_print["Round"] = round.name
             dico_print["Name"] = player["player_object"].name
@@ -280,17 +281,17 @@ def show_rounds_result(rounds):
 
 def start_game(tournament, players):
     """ Start directly game without menu"""
-    tournament.set_players(players)  # init players list
+    path_bdd = create_db_folder()
+    database_object = Database(path_bdd, "database")
 
-    algo = AlgoSuisse(players)
+    tournament.set_players(players)  # init players list
+    algo = Algo_suisse(players)
     matchs = algo.first_sort()
-    print(">matchs len = " + str(len(matchs)))
+
     # ROUND1
     first_round = Round(matchs, "Round 1")
-
     tournament.add_round_in_rounds(first_round)
     first_round.start().play(0).end()
-
     show_rounds_result([first_round])
 
     # OTHERS ROUNDS
@@ -298,29 +299,17 @@ def start_game(tournament, players):
     rounds_count = len(tournament.rounds)
 
     while rounds_count != tournament.turns:
-        matchs = algo.second_sort(last_round).get_matchs_historic(tournament.rounds).second_pairing() \
-            .apply_first_player_condition()
+        matchs = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
         new_round = Round(matchs, "Round " + str(rounds_count + 1))
 
         tournament.add_round_in_rounds(new_round)
         new_round.start().play(0).end()
 
         rounds_count = len(tournament.rounds)
-
         show_rounds_result([new_round])
 
-    # show_rounds_result(tournament.rounds)
-
     press_key_to_continue()
-    # print("write tournament")
-    print(tournament.serialized())
 
-    path_bdd = create_db_folder()
-    database_object = Database(path_bdd, "database")
+    # SAVE PARTY
+    database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
 
-    print("=============")
-    print(tournament.serialized())
-    database_object.create_or_load_table_name('tournaments')\
-        .update_item(tournament.name, tournament.serialized())
-
-#analyze_tournaments("tournaments")

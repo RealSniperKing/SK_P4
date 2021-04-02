@@ -9,7 +9,9 @@ from models.class_match import Match
 
 #https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html
 
+
 class AlgoSuisse:
+
     def __init__(self, players_ob):
         self.players_ob = players_ob
 
@@ -23,13 +25,11 @@ class AlgoSuisse:
 
     def first_sort(self):
         """ 1. Au début du premier tour, triez tous les joueurs en fonction de leur classement. """
-
         sorted_players = sorted(self.players_ob, key=lambda x: x.ranking)
 
         """ 2. Divisez les joueurs en deux moitiés, une supérieure et une inférieure. Le meilleur joueur de la moitié 
         supérieure est jumelé avec le meilleur joueur de la moitié inférieure, et ainsi de suite. """
-        len_dico = len(self.players_ob)
-        len_half = int(len_dico / 2)
+        len_half = int(len(self.players_ob) / 2)
 
         matchs = []
         # ASSIGN OPPONENT TO TOP HALF PART
@@ -37,10 +37,7 @@ class AlgoSuisse:
             player_a = [sorted_players[i], 0]
             player_b = [sorted_players[i + len_half], 0]
 
-            # CREATE MATCH
             match = Match(player_a, player_b)
-
-            # ADD MATCH IN MATCHS LIST
             matchs.append(match)
 
         return matchs
@@ -104,7 +101,6 @@ class AlgoSuisse:
 
     def second_pairing(self):
         """ 4. Associez le joueur 1 avec le joueur 2 et ainsi de suite."""
-
         # ASSOCIATION
         new_matchs_temp_sorted = []  # players are not sorted to each match
         new_matchs_temp_no_sorted = []  # players are sorted by name to each match

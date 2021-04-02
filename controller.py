@@ -17,6 +17,8 @@ import os
 import os.path
 
 # DATABASE --------------------------------------------------
+
+
 def add_player_in_db():
     """ Contains all operations to add a new player in data base """
     # USER INPUTS
@@ -101,11 +103,9 @@ def analyze_tournaments(table_name, mode):
             if mode == 0:
                 if not tournament.rounds:
                     return_tournaments.append(tournament)
-
             if mode == 1:
                 if len(tournament.rounds) > tournament.turns and len(tournament.rounds) < tournament.turns:
                     return_tournaments.append(tournament)
-
             if mode == 2:
                 if len(tournament.rounds) == tournament.turns:
                     return_tournaments.append(tournament)
@@ -179,6 +179,38 @@ def convert_players_instances_to_dico(players):
         players_dico.append(player.serialized())
     return players_dico
 
+def extract_matchs(round_matchs):
+    items = []
+    for match in round_matchs:
+        match_temp = match.serialized_infos()
+        match_infos = {}
+
+        match_infos['playerA'] = match_temp[0]["player_object"].name
+        match_infos['scoreA'] = match_temp[0]["player_score"]
+        match_infos['rankingA'] = match_temp[0]["player_ranking"]
+
+        match_infos['playerB'] = match_temp[1]["player_object"].name
+        match_infos['scoreB'] = match_temp[1]["player_score"]
+        match_infos['rankingB'] = match_temp[0]["player_ranking"]
+
+        items.append(match_infos)
+    return items
+
+def extract_rounds(round_infos, round_matchs):
+    versus = []
+    for match in round_matchs:
+        match_temp = match.serialized_infos()
+        vs = match_temp[0]["player_object"].name + "|" + match_temp[1]["player_object"].name
+        versus.append(vs)
+    del round_infos['matchs']
+
+    for i, match_vs in enumerate(versus, 1):
+        round_infos['match ' + str(i)] = match_vs
+
+    print(round_infos)
+
+    return round_infos
+
 
 def report_game(tournament, mode):
     if mode == 1 or mode == 2:
@@ -197,36 +229,16 @@ def report_game(tournament, mode):
             round_matchs = round_infos['matchs']
 
             if mode == 3:
-                versus = []
-                for match in round_matchs:
-                    match_temp = match.serialized_infos()
-                    vs = match_temp[0]["player_object"].name + "|" + match_temp[1]["player_object"].name
-                    versus.append(vs)
-                del round_infos['matchs']
-
-                for i, match_vs in enumerate(versus, 1):
-                    round_infos['match ' + str(i)] = match_vs
-                items.append(round_infos)
-
+                items_temp = extract_rounds(round_infos, round_matchs)
+                items.append(items_temp)
             if mode == 4:
-                match_infos = {}
-                for match in round_matchs:
-                    match_temp = match.serialized_infos()
-                    # print(match_temp)
-                    match_infos['playerA'] = match_temp[0]["player_object"].name
-                    match_infos['scoreA'] = match_temp[0]["player_score"]
-                    match_infos['rankingA'] = match_temp[0]["player_ranking"]
-
-                    match_infos['playerB'] = match_temp[1]["player_object"].name
-                    match_infos['scoreB'] = match_temp[1]["player_score"]
-                    match_infos['rankingB'] = match_temp[0]["player_ranking"]
-
-                    items.append(match_infos)
-
+                items_temp = extract_matchs(round_matchs)
+                items.extend(items_temp)
         if items:
             convert_dico_to_df(items)
 
     press_key_to_continue()
+
 
 def search_element_in_db():
     # CREATE OR ACCES TO DIRECTORY

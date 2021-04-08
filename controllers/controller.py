@@ -1,11 +1,11 @@
 # coding: utf-8
 
-from views.display_operations import print_dico_items, clear, convert_dico_to_df
+from views.display_operations import print_dico, clear, convert_dico_to_df
 from views.inputs_operations import inputs_add_player, inputs_add_tournament, confirm_or_cancel, \
     press_key_to_continue
 
 from models.class_player_model import Player
-from models.class_tournament_model import Tournament, convert_matchs_instances_to_dico
+from models.class_tournament_model import Tournament
 
 from models.class_database import create_db_folder, Database
 
@@ -31,8 +31,7 @@ def add_player_in_db():
 
     # DIALOG BOX TO CONFIRM
     clear()
-    confirm = confirm_or_cancel("Are you sure to add this player in database ?\n"
-                                              + print_dico_items(serialized_player))
+    confirm = confirm_or_cancel("Are you sure to add this player in database ?\n" + print_dico(serialized_player))
     if confirm:
         # CREATE OR ACCES TO DIRECTORY
         path_bdd = create_db_folder()
@@ -53,8 +52,7 @@ def add_tournament_in_db():
     """ Contains all operations to add a new tournament in data base """
 
     # USER INPUTS
-    name, place, duration, dates, turns, rounds, players, \
-    time_control, description = inputs_add_tournament()
+    name, place, duration, dates, turns, rounds, players, time_control, description = inputs_add_tournament()
 
     # CREATE TOURNAMENT OBJECT
     tournament = Tournament(name, place, duration, dates, turns, rounds,
@@ -64,8 +62,7 @@ def add_tournament_in_db():
 
     # DIALOG BOX TO CONFIRM
     clear()
-    confirm = confirm_or_cancel("Are you sure to add this player in database ?\n"
-                                              + print_dico_items(serialized_tournament))
+    confirm = confirm_or_cancel("Are you sure to add this player in database ?\n" + print_dico(serialized_tournament))
     if confirm:
         # CREATE OR ACCES TO DIRECTORY
         path_bdd = create_db_folder()
@@ -348,4 +345,3 @@ def start_game(tournament, players):
 
     # SAVE PARTY
     database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
-

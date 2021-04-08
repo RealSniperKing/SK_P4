@@ -25,7 +25,7 @@ def show_menu(title, input_value, clear_console=True):
     return choice
 
 
-def print_dico_items(serialized_player):
+def print_dico(serialized_player):
 
     text = json.dumps(serialized_player, indent=4)
 
@@ -37,4 +37,3 @@ def convert_dico_to_df(dico):
     df = pd.DataFrame(dico)
     df.index += 1
     print(df)
-

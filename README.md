@@ -28,10 +28,6 @@
 #### Après la fin du traitement. Désactiver l'environnement à l'aide de la commande
 `deactivate`
 
-
-
-
-
 --------------------------------------------------------------------------------
 #### Generate file requirements.txt
 `pip freeze > requirements.txt`

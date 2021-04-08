@@ -1,10 +1,10 @@
-# coding: utf-8
-
 from views.ask_user_module import ask_user, date_time_controller
 from views.display_operations import show_menu
 
 from utils.basics_operations import get_curent_date_time, date_type, convert_string_to_date_time, \
     add_days_to_date_time, convert_date_time_to_string
+
+
 # --- MENUS ---
 
 

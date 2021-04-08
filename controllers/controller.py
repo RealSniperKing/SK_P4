@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from views.display_operations import print_dico, clear, convert_dico_to_df
 from views.inputs_operations import inputs_add_player, inputs_add_tournament, confirm_or_cancel, \
     press_key_to_continue

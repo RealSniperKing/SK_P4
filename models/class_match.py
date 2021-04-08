@@ -1,5 +1,3 @@
-# coding: utf-8
-
 class Match:
     def __init__(self, list1_player_score, list2_player_score):
         self.list1_player_score = list1_player_score

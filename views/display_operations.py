@@ -1,8 +1,5 @@
-# coding: utf-8
-
 from os import system, name
 import json
-
 import pandas as pd
 pd.set_option('display.max_rows', 30)
 pd.set_option('display.max_columns', 10)

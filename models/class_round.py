@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from utils.basics_operations import get_curent_date_time
 import time
 import random

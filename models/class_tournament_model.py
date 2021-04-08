@@ -1,5 +1,3 @@
-# coding: utf-8
-
 def convert_matchs_instances_to_dico(round_matchs):
     matchs_serialized = []
     for match in round_matchs:

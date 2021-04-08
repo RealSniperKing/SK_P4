@@ -1,6 +1,4 @@
-# coding: utf-8
-
-class Player():
+class Player:
     def __init__(self, name, firstname, birthday, gender, ranking):
         self.name = name
         self.firstname = firstname

@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from tinydb import TinyDB, Query
 from pathlib import Path
 

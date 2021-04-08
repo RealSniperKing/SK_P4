@@ -3,6 +3,7 @@
 from views.display_operations import show_menu, clear, convert_dico_to_df
 from views.inputs_operations import ask_user, dialog_box_to_confirm_or_cancel, press_key_to_continue
 
+import sys
 from controllers.controller import add_player_in_db, add_tournament_in_db, \
     analyze_tournaments, analyze_players, start_game, report_game, players_reports, tournaments_report
 

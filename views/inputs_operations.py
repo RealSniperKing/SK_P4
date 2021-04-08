@@ -8,8 +8,8 @@ from utils.basics_operations import get_curent_date_time, date_type, convert_str
 # --- MENUS ---
 
 
-def press_key_to_continue():
-    input("Press Enter to continue...")
+def press_key_to_continue(text="Press Enter to continue..."):
+    input(text)
 
 
 def confirm_or_cancel(title):

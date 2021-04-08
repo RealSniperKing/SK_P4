@@ -1,6 +1,9 @@
 # coding: utf-8
 
-from views.display_operations import show_menu, clear, convert_dico_to_df
+import sys
+sys.path.append("..")
+
+from views.display_operations import show_menu, clear
 from views.inputs_operations import ask_user, dialog_box_to_confirm_or_cancel, press_key_to_continue
 
 import sys

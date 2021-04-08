@@ -3,11 +3,11 @@
 import sys
 sys.path.append("..")
 
-from mvc.views.display_operations import show_menu, clear
-from mvc.views.inputs_operations import ask_user, confirm_or_cancel, press_key_to_continue
+from views.display_operations import show_menu, clear
+from views.inputs_operations import ask_user, confirm_or_cancel, press_key_to_continue
 
 import sys
-from mvc.controllers.controller import add_player_in_db, add_tournament_in_db, \
+from controllers.controller import add_player_in_db, add_tournament_in_db, \
     analyze_tournaments, analyze_players, start_game, report_game, players_reports, tournaments_report
 
 class UI:

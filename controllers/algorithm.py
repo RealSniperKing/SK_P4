@@ -1,6 +1,6 @@
 # coding: utf-8
 import pandas as pd
-from mvc.models.class_match import Match
+from models.class_match import Match
 
 
 class Algo_suisse:

@@ -6,7 +6,7 @@ if True:  # noqa: E402
     from views.inputs_operations import ask_user, confirm_or_cancel
 
     from controllers.controller import add_player_in_db, add_tournament_in_db, analyze_tournaments, analyze_players, \
-        start_game, report_game, players_reports, tournaments_report
+        start_game, report_game, players_reports, tournaments_report, remove_db_item
 
 
 class UI:
@@ -66,6 +66,7 @@ class UI:
         choice = "0"
         choices = {"1": "- Enter 1 to Add a new tournament\n",
                    "2": "- Enter 2 to Print all tournaments\n",
+                   "3": "- Enter 3 to Remove a tournament\n",
                    "4": "- Enter 4 to Return in Main Menu\n"}
 
         while choice not in list(choices):
@@ -76,6 +77,9 @@ class UI:
             self.menu_tournament_actions()
         elif choice == "2":
             tournaments_report()
+            self.menu_tournament_actions()
+        elif choice == "3":
+            self.menu_remove_tournament()
             self.menu_tournament_actions()
         elif choice == "4":
             self.main_menu_actions()
@@ -200,6 +204,21 @@ class UI:
             self.menu_game_report()
         elif choice == "5":
             self.menu_game_actions()
+
+    def menu_remove_tournament(self):
+        choices, tournaments_empty = analyze_tournaments("tournaments", 3, " to delete : ")
+        choice = "0"
+        cancel_id = str(len(choices) + 1)
+        choices[cancel_id] = "- Enter " + cancel_id + " to access a Game Menu\n"
+
+        while choice not in list(choices):
+            choice = show_menu("DELETE - TOURNAMENT", ''.join(choices.values()), False)
+
+        if choice in choices and choice != cancel_id:
+            tournament = tournaments_empty[int(choice) - 1]
+            # INPUT PLAYERS
+            self.select_tournament = tournament
+            remove_db_item(tournament, "this tournament", "tournaments")
 
 
 if __name__ == '__main__':

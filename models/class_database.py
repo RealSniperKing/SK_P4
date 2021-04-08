@@ -1,4 +1,4 @@
-from tinydb import TinyDB, Query
+from tinydb import TinyDB, Query, where
 from pathlib import Path
 
 from utils.basics_operations import add_folder
@@ -59,8 +59,6 @@ class Database:
         # test = db_table.search(Player.firstname == 'Eli')
         test = self.current_table_object.search(Player.firstname.search(self.item_to_search))
 
-        print(test)
-
     def update_item(self, name, dico_t):
         id_dico = -1
         print(self.current_table_object.count)
@@ -74,32 +72,17 @@ class Database:
 
             print(self.current_table_object.all())
 
-    def remove_item(self, name):
-        name = 'Tournoi de test'
+    def remove_item(self, items_to_check):
         db = self.current_table_object
-        User = Query()
-        contains_result = db.contains(User.name == 'Tournoi de test')
-        count_result = db.count(User.name == 'Tournoi de test')
-        print(contains_result)
-        print(count_result)
 
-        doc = db.get(User.name == name)
-        print(doc)
+        ids = []
+        for item in items_to_check:
+            doc = db.get(where(item) == items_to_check[item])
+            ids.append(doc.doc_id)
 
-        item_id = doc.doc_id
-        print(item_id)
-        if db.contains(doc_id=item_id):
-            db.remove(doc_ids=[item_id])
-
-        # print(self.current_table_object.all())
-
-        # Test = Query()
-        # el = self.current_table_object.get(Test.name == 'name')
-        # print(el)
-
-        # print(self.current_table_object.contains(doc_id=id_dico))
-        # if id_dico != -1:
-        #     self.current_table_object.remove(doc_ids=[id_dico])
+        if len(set(ids)) == 1:
+            db.remove(doc_ids=[ids[0]])
+            print("Item has been removed")
 
     def set_current_table_name(self, value):
         self.current_table_name = value

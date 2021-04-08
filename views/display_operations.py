@@ -8,6 +8,7 @@ pd.set_option('display.max_rows', 30)
 pd.set_option('display.max_columns', 10)
 pd.set_option('display.width', 1000)
 
+
 def clear():
     if name == "nt":
         _ = system("cls")
@@ -34,5 +35,6 @@ def print_dico_items(serialized_player):
 def convert_dico_to_df(dico):
     print("=====================================")
     df = pd.DataFrame(dico)
+    df.index += 1
     print(df)
 

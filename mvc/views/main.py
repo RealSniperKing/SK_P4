@@ -3,11 +3,11 @@
 import sys
 sys.path.append("..")
 
-from views.display_operations import show_menu, clear
-from views.inputs_operations import ask_user, dialog_box_to_confirm_or_cancel, press_key_to_continue
+from mvc.views.display_operations import show_menu, clear
+from mvc.views.inputs_operations import ask_user, confirm_or_cancel, press_key_to_continue
 
 import sys
-from controllers.controller import add_player_in_db, add_tournament_in_db, \
+from mvc.controllers.controller import add_player_in_db, add_tournament_in_db, \
     analyze_tournaments, analyze_players, start_game, report_game, players_reports, tournaments_report
 
 class UI:
@@ -171,7 +171,7 @@ class UI:
             choice = "0"
 
         print(players_to_party)
-        confirm = dialog_box_to_confirm_or_cancel("Are you sure to start this tournament ?\n")
+        confirm = confirm_or_cancel("Are you sure to start this tournament ?\n")
         if confirm:
             start_game(self.select_tournament, players_object_to_party)
 

@@ -1,9 +1,9 @@
 # coding: utf-8
 
-from views.ask_user_module import ask_user, date_time_controller
-from views.display_operations import show_menu, clear
+from mvc.views.ask_user_module import ask_user, date_time_controller
+from mvc.views.display_operations import show_menu, clear
 
-from utils.basics_operations import get_curent_date_time, date_type, convert_string_to_date_time, add_days_to_date_time,\
+from mvc.utils.basics_operations import get_curent_date_time, date_type, convert_string_to_date_time, add_days_to_date_time,\
     convert_date_time_to_string
 # --- MENUS ---
 
@@ -12,7 +12,7 @@ def press_key_to_continue():
     input("Press Enter to continue...")
 
 
-def dialog_box_to_confirm_or_cancel(title):
+def confirm_or_cancel(title):
     choice = "0"
     choices = {"1": "- Enter 1 to Confirm\n",
                "2": "- Enter 2 to Cancel\n"}

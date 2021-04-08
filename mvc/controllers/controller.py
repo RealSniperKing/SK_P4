@@ -1,17 +1,17 @@
 # coding: utf-8
 
-from views.display_operations import print_dico_items, clear, convert_dico_to_df
-from views.inputs_operations import inputs_add_player, inputs_add_tournament,\
-    dialog_box_to_confirm_or_cancel, press_key_to_continue
+from mvc.views.display_operations import print_dico_items, clear, convert_dico_to_df
+from mvc.views.inputs_operations import inputs_add_player, inputs_add_tournament, confirm_or_cancel, \
+    press_key_to_continue
 
-from models.class_player_model import Player
-from models.class_tournament_model import Tournament, convert_matchs_instances_to_dico
+from mvc.models.class_player_model import Player
+from mvc.models.class_tournament_model import Tournament, convert_matchs_instances_to_dico
 
-from models.class_database import create_db_folder, Database
+from mvc.models.class_database import create_db_folder, Database
 
-from controllers.algorithm import Algo_suisse
-from models.class_round import Round
-from models.class_match import Match
+from mvc.controllers.algorithm import Algo_suisse
+from mvc.models.class_round import Round
+from mvc.models.class_match import Match
 
 import os
 import os.path
@@ -31,7 +31,7 @@ def add_player_in_db():
 
     # DIALOG BOX TO CONFIRM
     clear()
-    confirm = dialog_box_to_confirm_or_cancel("Are you sure to add this player in database ?\n"
+    confirm = confirm_or_cancel("Are you sure to add this player in database ?\n"
                                               + print_dico_items(serialized_player))
     if confirm:
         # CREATE OR ACCES TO DIRECTORY
@@ -64,7 +64,7 @@ def add_tournament_in_db():
 
     # DIALOG BOX TO CONFIRM
     clear()
-    confirm = dialog_box_to_confirm_or_cancel("Are you sure to add this player in database ?\n"
+    confirm = confirm_or_cancel("Are you sure to add this player in database ?\n"
                                               + print_dico_items(serialized_tournament))
     if confirm:
         # CREATE OR ACCES TO DIRECTORY

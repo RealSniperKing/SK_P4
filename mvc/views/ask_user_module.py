@@ -43,4 +43,3 @@ def date_time_controller(user_input, format_date):
             print("Please write date in this format : yyyy-mm-dd")
             user_input = ask_user('Enter tournament date start yyyy-mm-dd', str, "")
     return user_input
-

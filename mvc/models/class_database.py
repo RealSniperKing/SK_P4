@@ -3,7 +3,7 @@
 from tinydb import TinyDB, Query
 from pathlib import Path, PurePath
 
-from utils.basics_operations import add_folder
+from mvc.utils.basics_operations import add_folder
 import os, sys
 
 def create_db_folder():

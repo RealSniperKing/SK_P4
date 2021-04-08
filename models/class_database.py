@@ -1,20 +1,26 @@
 # coding: utf-8
 
 from tinydb import TinyDB, Query
-from pathlib import Path
+from pathlib import Path, PurePath
 
 from utils.basics_operations import add_folder
 import os, sys
 
 def create_db_folder():
-    script_path = sys.argv[0]
-    base_dir_script = Path(os.path.dirname(script_path), "models")
+    script_path = Path(sys.argv[0])
+    #print("script_path = " + str(script_path))
+
+    main_dir = script_path.parent.parent
+    #print("main_dir = " + str(main_dir))
+
+    base_dir_script = Path(main_dir, "models")
 
     try:
         path_bdd_directory = add_folder(base_dir_script, 'BDD')
     except:
         path_bdd_directory = ""
 
+    #print("path_bdd_directory = " + str(path_bdd_directory))
     return path_bdd_directory
 
 class Database:

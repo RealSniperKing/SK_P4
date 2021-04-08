@@ -1,14 +1,14 @@
 # coding: utf-8
-
 import sys
 sys.path.append("..")
 
-from views.display_operations import show_menu, clear
-from views.inputs_operations import ask_user, confirm_or_cancel, press_key_to_continue
+if True:  # noqa: E402
+    from views.display_operations import show_menu, clear
+    from views.inputs_operations import ask_user, confirm_or_cancel
 
-import sys
-from controllers.controller import add_player_in_db, add_tournament_in_db, \
-    analyze_tournaments, analyze_players, start_game, report_game, players_reports, tournaments_report
+    from controllers.controller import add_player_in_db, add_tournament_in_db, analyze_tournaments, analyze_players, \
+        start_game, report_game, players_reports, tournaments_report
+
 
 class UI:
     def __init__(self):
@@ -202,6 +202,6 @@ class UI:
         elif choice == "5":
             self.menu_game_actions()
 
+
 if __name__ == '__main__':
     UI()
-

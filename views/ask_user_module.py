@@ -29,7 +29,8 @@ def ask_user_alert(response, type_var):
         else:
             alert = True
             print("--> Please enter none empty element")
-    except:
+    except Exception as ex:
+        print("Error = " + str(ex))
         print("--> Please enter a " + str(type_var) + " value")
         alert = True
     return alert, response
@@ -39,7 +40,8 @@ def date_time_controller(user_input, format_date):
     while type(user_input) != datetime:
         try:
             user_input = datetime.strptime(user_input, format_date)
-        except:
+        except Exception as ex:
+            print("Error = " + str(ex))
             print("Please write date in this format : yyyy-mm-dd")
             user_input = ask_user('Enter tournament date start yyyy-mm-dd', str, "")
     return user_input

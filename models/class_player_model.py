@@ -23,4 +23,3 @@ class Player():
                                       "gender": self.gender,
                                       "ranking": self.ranking}
         return self.serialized_player_var
-

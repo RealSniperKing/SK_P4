@@ -1,7 +1,5 @@
 # coding: utf-8
-import ast
 
-from .class_player_model import Player
 def convert_matchs_instances_to_dico(round_matchs):
     matchs_serialized = []
     for match in round_matchs:
@@ -11,9 +9,9 @@ def convert_matchs_instances_to_dico(round_matchs):
         matchs_serialized.append(match_temp)
     return matchs_serialized
 
+
 class Tournament:
-    def __init__(self, name, place, duration, dates, turns, rounds, players,
-                 time_control, description):
+    def __init__(self, name, place, duration, dates, turns, rounds, players, time_control, description):
         # WHERE
         self.name = name
         self.place = place

@@ -1,27 +1,30 @@
 # coding: utf-8
 
 from tinydb import TinyDB, Query
-from pathlib import Path, PurePath
+from pathlib import Path
 
 from utils.basics_operations import add_folder
-import os, sys
+import sys
+
 
 def create_db_folder():
     script_path = Path(sys.argv[0])
-    #print("script_path = " + str(script_path))
+    # print("script_path = " + str(script_path))
 
     main_dir = script_path.parent.parent
-    #print("main_dir = " + str(main_dir))
+    # print("main_dir = " + str(main_dir))
 
     base_dir_script = Path(main_dir, "models")
 
     try:
         path_bdd_directory = add_folder(base_dir_script, 'BDD')
-    except:
+    except Exception as ex:
+        print("Error = " + str(ex))
         path_bdd_directory = ""
 
-    #print("path_bdd_directory = " + str(path_bdd_directory))
+    # print("path_bdd_directory = " + str(path_bdd_directory))
     return path_bdd_directory
+
 
 class Database:
     def __init__(self, path, name):
@@ -43,7 +46,7 @@ class Database:
         players_table = None
         if self.current_table_name is not None:
             players_table = self.db.table(self.current_table_name)
-            #players_table.truncate()  # clear the table first
+            # players_table.truncate()  # clear the table first
             self.current_table_object = players_table
 
         return self
@@ -55,7 +58,7 @@ class Database:
     def search_item_in_table(self, value):
         self.item_to_search = value
         Player = Query()
-        #test = db_table.search(Player.firstname == 'Eli')
+        # test = db_table.search(Player.firstname == 'Eli')
         test = self.current_table_object.search(Player.firstname.search(self.item_to_search))
 
         print(test)
@@ -74,7 +77,7 @@ class Database:
             print(self.current_table_object.all())
 
     def remove_item(self, name):
-        id_dico = -1
+        name = 'Tournoi de test'
         db = self.current_table_object
         User = Query()
         contains_result = db.contains(User.name == 'Tournoi de test')
@@ -82,7 +85,7 @@ class Database:
         print(contains_result)
         print(count_result)
 
-        doc = db.get(User.name == 'Tournoi de test')
+        doc = db.get(User.name == name)
         print(doc)
 
         item_id = doc.doc_id
@@ -90,8 +93,7 @@ class Database:
         if db.contains(doc_id=item_id):
             db.remove(doc_ids=[item_id])
 
-        #print(self.current_table_object.all())
-
+        # print(self.current_table_object.all())
 
         # Test = Query()
         # el = self.current_table_object.get(Test.name == 'name')
@@ -109,5 +111,3 @@ class Database:
     def get_all_items_in_current_table(self):
         items = self.current_table_object.all()
         return items
-
-

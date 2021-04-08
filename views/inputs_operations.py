@@ -1,10 +1,10 @@
 # coding: utf-8
 
 from views.ask_user_module import ask_user, date_time_controller
-from views.display_operations import show_menu, clear
+from views.display_operations import show_menu
 
-from utils.basics_operations import get_curent_date_time, date_type, convert_string_to_date_time, add_days_to_date_time,\
-    convert_date_time_to_string
+from utils.basics_operations import get_curent_date_time, date_type, convert_string_to_date_time, \
+    add_days_to_date_time, convert_date_time_to_string
 # --- MENUS ---
 
 
@@ -68,7 +68,7 @@ def tournament_dates_start_end_from_duration(duration_value):
     user_input = ask_user('Enter tournament date start ' + format_date_stamp, str, date_string)
     while type(user_input) != date_type():
         user_input = convert_string_to_date_time(user_input)
-        if user_input is "":
+        if user_input == "":
             print("Please write date in this format : " + + format_date_stamp)
             user_input = ask_user('Enter tournament date start' + format_date_stamp, str, date_string)
 
@@ -97,6 +97,3 @@ def inputs_add_tournament():
     description = ask_user('Enter a description', str, "blabla")
 
     return name, place, duration, dates, turns, rounds, players, time_control, description
-
-
-

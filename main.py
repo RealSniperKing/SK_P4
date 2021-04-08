@@ -1,10 +1,10 @@
 # coding: utf-8
 
-from views.display_operations import show_menu, clear
-from views.inputs_operations import ask_user, dialog_box_to_confirm_or_cancel
+from views.display_operations import show_menu, clear, convert_dico_to_df
+from views.inputs_operations import ask_user, dialog_box_to_confirm_or_cancel, press_key_to_continue
 
 from controller import add_player_in_db, add_tournament_in_db, \
-    analyze_tournaments, analyze_players, start_game, report_game
+    analyze_tournaments, analyze_players, start_game, report_game, players_reports, tournaments_report
 
 class UI:
     def __init__(self):
@@ -35,8 +35,9 @@ class UI:
         choice = "0"
         choices = {"1": "- Enter 1 to Add player\n",
                    "2": "- Enter 2 to Edit Player\n",
-                   # "3": "- Enter 3 to Remove Player\n",
-                   "4": "- Enter 4 to Return in Main Menu\n"}
+                   "3": "- Enter 3 to print all players by alphabetical order\n",
+                   "4": "- Enter 4 to print all players by ranking\n",
+                   "5": "- Enter 5 to Return in Main Menu\n"}
 
         while choice not in choices:
             choice = show_menu("PLAYER - MENU", ''.join(choices.values()))
@@ -46,9 +47,13 @@ class UI:
             self.menu_player_actions()
         elif choice == "2":
             self.menu_player_actions()
-        # elif choice == "3":
-        #     menu_tournament_actions()
+        elif choice == "3":
+            players_reports(0)
+            self.menu_player_actions()
         elif choice == "4":
+            players_reports(1)
+            self.menu_player_actions()
+        elif choice == "5":
             self.main_menu_actions()
 
         return self
@@ -57,7 +62,7 @@ class UI:
         """ Display tournament menu and control calls to actions """
         choice = "0"
         choices = {"1": "- Enter 1 to Add a new tournament\n",
-                   "2": "- Enter 2 to Delete a tournament\n",
+                   "2": "- Enter 2 to Print all tournaments\n",
                    "4": "- Enter 4 to Return in Main Menu\n"}
 
         while choice not in list(choices):
@@ -67,11 +72,11 @@ class UI:
             add_tournament_in_db()
             self.menu_tournament_actions()
         elif choice == "2":
+            tournaments_report()
             self.menu_tournament_actions()
         elif choice == "4":
             self.main_menu_actions()
 
-    # GAME ACTIONS
     def menu_game_actions(self):
         """ Display tournament menu and control calls to actions """
         choice = "0"

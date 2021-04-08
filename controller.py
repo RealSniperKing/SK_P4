@@ -5,7 +5,7 @@ from views.inputs_operations import inputs_add_player, inputs_add_tournament,\
     dialog_box_to_confirm_or_cancel, press_key_to_continue
 
 from models.class_player_model import Player
-from models.class_tournament_model import Tournament
+from models.class_tournament_model import Tournament, convert_matchs_instances_to_dico
 
 from models.class_database import create_db_folder, Database
 
@@ -81,7 +81,7 @@ def add_tournament_in_db():
 
 
 def analyze_tournaments(table_name, mode):
-    """ mode 0 = empty / mode 1 = in progress / mode 2 = completed """
+    """ mode 0 = empty / mode 1 = in progress / mode 2 = completed / mode 3 = all"""
     path_bdd = create_db_folder()
     choices = {}
     if os.path.isdir(path_bdd):
@@ -110,6 +110,8 @@ def analyze_tournaments(table_name, mode):
             if mode == 2:
                 if len(tournament.rounds) == tournament.turns:
                     return_tournaments.append(tournament)
+            if mode == 4:
+                return_tournaments.append(tournament)
 
         for i, t in enumerate(return_tournaments, 1):
             choices[str(i)] = "- Enter " + str(i) + " to run : " + t.name +\
@@ -188,7 +190,7 @@ def dic_tournament_to_ob(rounds):
     return rounds_ob
 
 
-def convert_players_instances_to_dico(players):
+def players_to_dico(players):
     players_dico = []
     for player in players:
         players_dico.append(player.serialized())
@@ -230,7 +232,7 @@ def report_game(tournament, mode):
             players = sorted(players, key=lambda x: x.name)
         elif mode == 2:  # print players by ranking
             players = sorted(players, key=lambda x: x.ranking)
-        convert_dico_to_df(convert_players_instances_to_dico(players))
+        convert_dico_to_df(players_to_dico(players))
 
     if mode == 3 or mode == 4:  # print rounds
         rounds = tournament.rounds
@@ -247,6 +249,40 @@ def report_game(tournament, mode):
                 items.extend(items_temp)
         if items:
             convert_dico_to_df(items)
+
+    press_key_to_continue()
+
+
+def players_reports(mode):
+    """ mode 0 = by alphabetical order / mode 1 = by ranking """
+    choices, players_objects = analyze_players("players")
+
+    if mode == 0:
+        sorted_players = sorted(players_objects, key=lambda x: x.name)
+    elif mode == 1:
+        sorted_players = sorted(players_objects, key=lambda x: x.ranking)
+
+    convert_dico_to_df(players_to_dico(sorted_players))
+
+    press_key_to_continue()
+
+
+def tournaments_report():
+    choices, tournaments = analyze_tournaments("tournaments", 4)
+
+    tournaments_serialized = []
+    for tournament in tournaments:
+        tournament_temp = tournament.serialized()
+
+        len_rounds = len(tournament_temp['rounds'])
+        len_players = len(tournament_temp['players'])
+
+        tournament_temp['rounds'] = len_rounds
+        tournament_temp['players'] = len_players
+
+        tournaments_serialized.append(tournament_temp)
+
+    convert_dico_to_df(tournaments_serialized)
 
     press_key_to_continue()
 

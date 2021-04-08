@@ -1,6 +1,6 @@
 # SK_P4
 
-#### This program have written in Python 3.6
+#### This program has been written in Python 3.6
 
 #### Only if necessary, set the drive letter 
 `cd /d d:`

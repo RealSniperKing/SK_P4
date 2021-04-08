@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import os.path
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 
 # BASIC OPERATIONS
 
@@ -11,7 +11,8 @@ def add_folder(path_root_folder, name_new_folder):
     if not os.path.exists(tempo_new_folder):
         try:
             os.makedirs(tempo_new_folder)
-        except:
+        except Exception as ex:
+            print("Error = " + str(ex))
             print('This folder already exist')
     return tempo_new_folder
 
@@ -31,7 +32,8 @@ def convert_string_to_date_time(user_input, format_date="%Y-%m-%d %H:%M:%S"):
     try:
         user_input_converted = datetime.strptime(user_input, format_date)
         return user_input_converted
-    except:
+    except Exception as ex:
+        print("Error = " + str(ex))
         user_input = ""
         return user_input
 

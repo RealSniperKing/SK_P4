@@ -3,13 +3,12 @@
 from tinydb import TinyDB, Query
 from pathlib import Path
 
-from basics_operations import add_folder
+from utils.basics_operations import add_folder
 import os, sys
 
 def create_db_folder():
-    #base_dir_script = Path.cwd()
     script_path = sys.argv[0]
-    base_dir_script = os.path.dirname(script_path)
+    base_dir_script = Path(os.path.dirname(script_path), "models")
 
     try:
         path_bdd_directory = add_folder(base_dir_script, 'BDD')

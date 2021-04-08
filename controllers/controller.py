@@ -53,8 +53,7 @@ def add_tournament_in_db():
     name, place, duration, dates, turns, rounds, players, time_control, description = inputs_add_tournament()
 
     # CREATE TOURNAMENT OBJECT
-    tournament = Tournament(name, place, duration, dates, turns, rounds,
-                            players, time_control, description)
+    tournament = Tournament(name, place, duration, dates, turns, rounds, players, time_control, description)
 
     serialized_tournament = tournament.serialized()
 
@@ -75,13 +74,12 @@ def add_tournament_in_db():
         database_object.insert_serialized_objects_in_current_table([serialized_tournament])
 
 
-def analyze_tournaments(table_name, mode):
+def analyze_tournaments(table_name, mode, text=" to run : "):
     """ mode 0 = empty / mode 1 = in progress / mode 2 = completed / mode 3 = all"""
     path_bdd = create_db_folder()
     choices = {}
     if os.path.isdir(path_bdd):
-        database_object = Database(path_bdd, "database")\
-            .create_or_load_table_name(table_name)
+        database_object = Database(path_bdd, "database").create_or_load_table_name(table_name)
 
         tournaments = database_object.get_all_items_in_current_table()
 
@@ -105,12 +103,11 @@ def analyze_tournaments(table_name, mode):
             if mode == 2:
                 if len(tournament.rounds) == tournament.turns:
                     return_tournaments.append(tournament)
-            if mode == 4:
+            if mode == 3:
                 return_tournaments.append(tournament)
 
         for i, t in enumerate(return_tournaments, 1):
-            choices[str(i)] = "- Enter " + str(i) + " to run : " + t.name +\
-                              " | " + t.place + "\n"
+            choices[str(i)] = "- Enter " + str(i) + text + t.name + " | " + t.place + "\n"
 
     return choices, return_tournaments
 
@@ -134,7 +131,6 @@ def analyze_players(table_name):
 
 
 def search_element_in_db():
-    # CREATE OR ACCES TO DIRECTORY
     path_bdd = create_db_folder()
 
     database_object = Database(path_bdd, "database").create_or_load_table_name("tournaments")
@@ -142,6 +138,23 @@ def search_element_in_db():
     # SEARCH ITEM IN TABLE
     database_object.search_item_in_table('L+')
 
+
+def remove_db_item(item, item_string, table_name):
+    item_name = item.name
+    items_to_check = {}
+    if table_name == "tournaments":
+        items_to_check = {"name": item.name, "place": item.place}
+
+    if table_name == "players":
+        items_to_check = {"name": item.name, "firstname": item.place}
+
+
+    confirm = confirm_or_cancel("Are you sure to remove " + item_string + " in database ?\n" + str(item_name))
+    if confirm:
+        print("REMOVE !!!!!!")
+        path_bdd = create_db_folder()
+        database_object = Database(path_bdd, "database").create_or_load_table_name(table_name)
+        database_object.remove_item(items_to_check)
 
 # CONVERT --------------------------------------------------
 
@@ -263,7 +276,7 @@ def players_reports(mode):
 
 
 def tournaments_report():
-    choices, tournaments = analyze_tournaments("tournaments", 4)
+    choices, tournaments = analyze_tournaments("tournaments", 3)
 
     tournaments_serialized = []
     for tournament in tournaments:
@@ -330,6 +343,8 @@ def start_game(tournament, players):
     rounds_count = len(tournament.rounds)
 
     while rounds_count != tournament.turns:
+        press_key_to_continue("Press Enter ...")
+
         matchs = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
         new_round = Round(matchs, "Round " + str(rounds_count + 1))
 

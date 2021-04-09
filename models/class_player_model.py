@@ -25,7 +25,6 @@ class Player:
                                       "gender": self.gender,
                                       "ranking": self.ranking}
         if ranking:
-            print("correction")
             self.serialized_player_var["tournament_ranking"] = self.tournament_ranking
             self.serialized_player_var["rankings_list"] = self.rankings_list
 

@@ -85,8 +85,6 @@ def analyze_tournaments(table_name, mode, text=" to run : "):
 
         return_tournaments = []
         for st in tournaments:
-            print("st['rounds'] = " + str(st["rounds"]))
-
             tournament = Tournament(st["name"],
                                     st["place"],
                                     st["duration"],
@@ -194,7 +192,6 @@ def dic_tournament_to_ob(rounds):
 
             player_b_score = match[1]['player_score']
 
-            print("player_a_ob_array[0] = " + str(player_a_ob_array[0].rankings_list))
             match_ob = Match([player_a_ob_array[0], player_a_score],
                              [player_b_ob_array[0], player_b_score])
 
@@ -269,7 +266,6 @@ def report_game(tournament, mode):
             convert_dico_to_df(items)
 
     if mode == 3:
-        debug_tournament(tournament.serialized())
         show_rounds_result(tournament.rounds)
 
     press_key_to_continue()
@@ -322,11 +318,6 @@ def show_rounds_result(rounds):
 
         list_results = []
         for player in players_list:
-            # print("player = " + str(player))
-            # print("player = " + str(player["player_object"].tournament_ranking))
-
-            print("player = " + str(player["player_object"].rankings_list[i]))
-
             dico_print = {"Round": round.name,
                           "Name": player["player_object"].name,
                           "First name": player["player_object"].firstname,

@@ -191,9 +191,6 @@ class UI:
         while choice not in list(choices):
             choice = show_menu("GAME - REPORTS", ''.join(choices.values()))
 
-        print("self.select_tournament = " + str(self.select_tournament))
-
-        print("choice = " + str(choice))
         if choice == "1":
             report_game(self.select_tournament, int(choice))
             self.menu_game_report()

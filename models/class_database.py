@@ -4,13 +4,21 @@ from pathlib import Path
 from utils.basics_operations import add_folder
 import sys
 
+import platform
+
+import time
 
 def create_db_folder():
+    print("platform.system() = " + str(platform.system()))
+    system_name = platform.system()
+    # if system_name == "Windows":
+
     script_path = Path(sys.argv[0])
+    print("script_path = " + str(script_path))
     # print("script_path = " + str(script_path))
 
     main_dir = script_path.parent.parent
-    # print("main_dir = " + str(main_dir))
+    print("main_dir = " + str(main_dir))
 
     base_dir_script = Path(main_dir, "models")
 
@@ -61,16 +69,11 @@ class Database:
 
     def update_item(self, name, dico_t):
         id_dico = -1
-        print(self.current_table_object.count)
         for i, dico in enumerate(self.current_table_object.all(), 1):
             if dico["name"] == name:
                 id_dico = i
-        print(id_dico)
         if id_dico != -1:
-
             self.current_table_object.update(dico_t, doc_ids=[id_dico])
-
-            print(self.current_table_object.all())
 
     def remove_item(self, items_to_check):
         db = self.current_table_object
@@ -83,6 +86,7 @@ class Database:
         if len(set(ids)) == 1:
             db.remove(doc_ids=[ids[0]])
             print("Item has been removed")
+        time.sleep(3)
 
     def set_current_table_name(self, value):
         self.current_table_name = value

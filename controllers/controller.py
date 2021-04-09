@@ -185,16 +185,16 @@ def dic_tournament_to_ob(rounds):
         list_matchs = []
         for match in round['matchs']:
             player_a_ob = match[0]['player_object']
-            print("player_a_ob = " + str(player_a_ob))
-            player_a_ob_array = dic_players_to_ob([player_a_ob])
+            player_a_ob_array = dic_players_to_ob([player_a_ob], True)
 
             player_a_score = match[0]['player_score']
 
             player_b_ob = match[1]['player_object']
-            player_b_ob_array = dic_players_to_ob([player_b_ob])
+            player_b_ob_array = dic_players_to_ob([player_b_ob], True)
 
             player_b_score = match[1]['player_score']
 
+            print("player_a_ob_array[0] = " + str(player_a_ob_array[0].rankings_list))
             match_ob = Match([player_a_ob_array[0], player_a_score],
                              [player_b_ob_array[0], player_b_score])
 

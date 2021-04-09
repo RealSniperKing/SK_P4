@@ -123,7 +123,7 @@ class UI:
             self.menu_select_players()
 
     def menu_resume_play(self):
-        choices, tournaments_empty = analyze_tournaments("tournaments", 1)
+        choices, tournaments_inprogress = analyze_tournaments("tournaments", 1)
         choice = "0"
         cancel_id = str(len(choices) + 1)
         choices[cancel_id] = "- Enter " + cancel_id + " to access a Game Menu\n"
@@ -132,12 +132,14 @@ class UI:
             choice = show_menu("RESUME - TOURNAMENT", ''.join(choices.values()), False)
 
         if choice in choices and choice != cancel_id:
-            tournament = tournaments_empty[int(choice) - 1]
+            tournament = tournaments_inprogress[int(choice) - 1]
             # INPUT PLAYERS
             self.select_tournament = tournament
 
+            start_game(self.select_tournament, self.select_tournament.players)
+
     def menu_show_game_result(self):
-        choices, tournaments_empty = analyze_tournaments("tournaments", 2)
+        choices, tournaments_ended = analyze_tournaments("tournaments", 2)
         choice = "0"
         cancel_id = str(len(choices) + 1)
         choices[cancel_id] = "- Enter " + cancel_id + " to access a Game Menu\n"
@@ -146,7 +148,7 @@ class UI:
             choice = show_menu("SHOW - TOURNAMENT", ''.join(choices.values()), False)
 
         if choice in choices and choice != cancel_id:
-            tournament = tournaments_empty[int(choice) - 1]
+            tournament = tournaments_ended[int(choice) - 1]
             # INPUT PLAYERS
             self.select_tournament = tournament
             self.menu_game_report()
@@ -188,6 +190,8 @@ class UI:
 
         while choice not in list(choices):
             choice = show_menu("GAME - REPORTS", ''.join(choices.values()))
+
+        print("self.select_tournament = " + str(self.select_tournament))
 
         print("choice = " + str(choice))
         if choice == "1":

@@ -3,7 +3,7 @@ def convert_matchs_instances_to_dico(round_matchs):
     for match in round_matchs:
         match_temp = match.serialized_infos()
         for item in match_temp:
-            item["player_object"] = item["player_object"].serialized()
+            item["player_object"] = item["player_object"].serialized(True)
         matchs_serialized.append(match_temp)
     return matchs_serialized
 
@@ -34,7 +34,7 @@ class Tournament:
         # SERIALIZED PLAYERS
         serialized_players = []
         for player in self.players:
-            serialized_player = player.serialized()
+            serialized_player = player.serialized(True)
             serialized_players.append(serialized_player)
 
         # SERIALIZED ROUNDS AND MATCHS

@@ -85,6 +85,8 @@ def analyze_tournaments(table_name, mode, text=" to run : "):
 
         return_tournaments = []
         for st in tournaments:
+            print("st['rounds'] = " + str(st["rounds"]))
+
             tournament = Tournament(st["name"],
                                     st["place"],
                                     st["duration"],
@@ -98,7 +100,7 @@ def analyze_tournaments(table_name, mode, text=" to run : "):
                 if not tournament.rounds:
                     return_tournaments.append(tournament)
             if mode == 1:
-                if len(tournament.rounds) > tournament.turns and len(tournament.rounds) < tournament.turns:
+                if len(tournament.rounds) < tournament.turns and len(tournament.rounds) != 0:
                     return_tournaments.append(tournament)
             if mode == 2:
                 if len(tournament.rounds) == tournament.turns:
@@ -148,23 +150,30 @@ def remove_db_item(item, item_string, table_name):
     if table_name == "players":
         items_to_check = {"name": item.name, "firstname": item.place}
 
-
     confirm = confirm_or_cancel("Are you sure to remove " + item_string + " in database ?\n" + str(item_name))
     if confirm:
-        print("REMOVE !!!!!!")
         path_bdd = create_db_folder()
         database_object = Database(path_bdd, "database").create_or_load_table_name(table_name)
         database_object.remove_item(items_to_check)
 
+
 # CONVERT --------------------------------------------------
 
 
-def dic_players_to_ob(players):
+def dic_players_to_ob(players, ranking=False):
     """ convert players dictionaries to players objects """
     players_objects = []
     for sp in players:
         player = Player(sp["name"], sp["firstname"], sp["birthday"],
                         sp["gender"], sp["ranking"])
+        if ranking:
+            try:
+                player.tournament_ranking = sp["tournament_ranking"]
+                player.rankings_list = sp["rankings_list"]
+            except Exception as ex:
+                print("Error = " + str(ex))
+                print("Warning : old tournament version")
+
         players_objects.append(player)
     return players_objects
 
@@ -176,6 +185,7 @@ def dic_tournament_to_ob(rounds):
         list_matchs = []
         for match in round['matchs']:
             player_a_ob = match[0]['player_object']
+            print("player_a_ob = " + str(player_a_ob))
             player_a_ob_array = dic_players_to_ob([player_a_ob])
 
             player_a_score = match[0]['player_score']
@@ -242,7 +252,7 @@ def report_game(tournament, mode):
             players = sorted(players, key=lambda x: x.ranking)
         convert_dico_to_df(players_to_dico(players))
 
-    if mode == 3 or mode == 4:  # print rounds
+    if mode == 4 or mode == 3:  # print rounds
         rounds = tournament.rounds
         items = []
         for round in rounds:
@@ -257,6 +267,10 @@ def report_game(tournament, mode):
                 items.extend(items_temp)
         if items:
             convert_dico_to_df(items)
+
+    if mode == 3:
+        debug_tournament(tournament.serialized())
+        show_rounds_result(tournament.rounds)
 
     press_key_to_continue()
 
@@ -299,7 +313,7 @@ def tournaments_report():
 
 
 def show_rounds_result(rounds):
-    for round in rounds:
+    for i, round in enumerate(rounds, 0):
         players_list = []
         for match in round.matchs():
             p_one, p_two = match.serialized_infos()
@@ -307,54 +321,83 @@ def show_rounds_result(rounds):
             players_list.append(p_two)
 
         list_results = []
-        for i, player in enumerate(players_list, 0):
-            dico_print = {}
-            dico_print["Round"] = round.name
-            dico_print["Name"] = player["player_object"].name
-            dico_print["First name"] = player["player_object"].firstname
+        for player in players_list:
+            # print("player = " + str(player))
+            # print("player = " + str(player["player_object"].tournament_ranking))
 
-            dico_print["Tournament ranking"] = player["player_object"].tournament_ranking
-            dico_print["Before this round"] = player["player_object"].tournament_ranking - player["player_score"]
-            dico_print["Player Score"] = player["player_score"]
+            print("player = " + str(player["player_object"].rankings_list[i]))
 
-            dico_print["Default ranking"] = player["player_object"].ranking
+            dico_print = {"Round": round.name,
+                          "Name": player["player_object"].name,
+                          "First name": player["player_object"].firstname,
+                          "Tournament ranking": player["player_object"].rankings_list[i],
+                          "Before this round": player["player_object"].rankings_list[i] - player["player_score"],
+                          "Player Score": player["player_score"],
+                          "Default ranking": player["player_object"].ranking}
+
             list_results.append(dico_print)
 
         convert_dico_to_df(list_results)
 
+
+def debug_tournament(dico):
+    for s in dico:
+        if s == "rounds":
+            print("....")
+            for matchs in dico[s]:
+                for m in matchs:
+                    if m == "matchs":
+                        for match in matchs[m]:
+                            print("match = " + str(match))
+
+
+def debug_matchs(matchs):
+    for i, match in enumerate(matchs):
+        print("i = " + str(i))
+        match_ser = match.serialized_infos()
+        match_ser[0]["player_object"] = match_ser[0]["player_object"].tournament_ranking
+        print(match_ser[0])
+
+        match_ser[1]["player_object"] = match_ser[1]["player_object"].tournament_ranking
+        print(match_ser[1])
+        print("------------")
 
 def start_game(tournament, players):
     """ Start directly game without menu"""
     path_bdd = create_db_folder()
     database_object = Database(path_bdd, "database")
 
-    tournament.set_players(players)  # init players list
+    rounds_count = len(tournament.rounds)
+
     algo = Algo_suisse(players)
-    matchs = algo.first_sort()
+    if rounds_count == 0:
+        tournament.set_players(players)  # init players list
+        matchs_first = algo.first_sort()
 
-    # ROUND1
-    first_round = Round(matchs, "Round 1")
-    tournament.add_round_in_rounds(first_round)
-    first_round.start().play(0).end()
-    show_rounds_result([first_round])
+        # ROUND1
+        first_round = Round(matchs_first, "Round 1")
+        first_round.start().play(0).end()
+        tournament.add_round_in_rounds(first_round)
 
-    # OTHERS ROUNDS
-    last_round = first_round
+        press_key_to_continue("Press Enter to write round results...")
+        database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
+
     rounds_count = len(tournament.rounds)
 
     while rounds_count != tournament.turns:
-        press_key_to_continue("Press Enter ...")
+        last_round = tournament.rounds[rounds_count - 1]
+        matchs_loop = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
 
-        matchs = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
-        new_round = Round(matchs, "Round " + str(rounds_count + 1))
-
-        tournament.add_round_in_rounds(new_round)
+        new_round = Round(matchs_loop, "Round " + str(rounds_count + 1))
         new_round.start().play(0).end()
-
+        tournament.add_round_in_rounds(new_round)
         rounds_count = len(tournament.rounds)
-        show_rounds_result([new_round])
 
-    press_key_to_continue()
+        press_key_to_continue("Press Enter to write round results...")
+        database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
 
-    # SAVE PARTY
-    database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
+    print("****************************")
+
+    show_rounds_result(tournament.rounds)
+
+    press_key_to_continue("Press Enter to close this game...")

@@ -4,7 +4,6 @@ from models.class_match import Match
 
 
 class Algo_suisse:
-
     def __init__(self, players_ob):
         self.players_ob = players_ob
 

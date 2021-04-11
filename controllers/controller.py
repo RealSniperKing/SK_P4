@@ -353,6 +353,7 @@ def debug_matchs(matchs):
         print(match_ser[1])
         print("------------")
 
+
 def start_game(tournament, players):
     """ Start directly game without menu"""
     path_bdd = create_db_folder()

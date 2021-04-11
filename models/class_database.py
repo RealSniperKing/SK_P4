@@ -8,9 +8,11 @@ import platform
 
 import time
 
+
 def create_db_folder():
     print("platform.system() = " + str(platform.system()))
     system_name = platform.system()
+    print("system_name = " + str(system_name))
     # if system_name == "Windows":
 
     script_path = Path(sys.argv[0])
@@ -63,9 +65,10 @@ class Database:
 
     def search_item_in_table(self, value):
         self.item_to_search = value
-        Player = Query()
+        player = Query()
         # test = db_table.search(Player.firstname == 'Eli')
-        test = self.current_table_object.search(Player.firstname.search(self.item_to_search))
+        test = self.current_table_object.search(player.firstname.search(self.item_to_search))
+        print("test = " + str(test))
 
     def update_item(self, name, dico_t):
         id_dico = -1

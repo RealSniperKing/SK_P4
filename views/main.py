@@ -157,7 +157,6 @@ class UI:
         players_max = ask_user('Enter players number', int, "8")
         choices, players_objects = analyze_players("players")
         choice = "0"
-        # cancel_id = str(len(choices) + 1)
 
         players_to_party = []
         players_object_to_party = []

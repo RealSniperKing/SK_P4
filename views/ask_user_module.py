@@ -32,6 +32,12 @@ def ask_user_alert(response, type_var):
         print("Error = " + str(ex))
         print("--> Please enter a " + str(type_var) + " value")
         alert = True
+
+    if not alert and type_var is int:
+        if response < 0:
+            print("--> Please enter a positive value")
+            alert = True
+
     return alert, response
 
 

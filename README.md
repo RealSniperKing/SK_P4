@@ -23,6 +23,8 @@ If the virtual environment was not created successfully, you need install this p
 Warning, if you use linux system:  
 `source env/bin/activate`  
 
+"(env)" is displayed if the environment have been activated
+
 #### If necessary, you can upgrade pip with this command
 `python -m pip install --upgrade pip`  
 
@@ -46,7 +48,8 @@ If you use Mac OS:
 
 If you use Linux:  
 `python3 main.py`
-#### Après la fin du traitement. Désactiver l'environnement à l'aide de la commande
+
+#### To exit environment
 `deactivate`
 
 --------------------------------------------------------------------------------

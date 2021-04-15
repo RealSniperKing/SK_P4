@@ -26,7 +26,7 @@ class Matchs_edit:
         choice = "0"
         choices = {"1": "- Enter 1 to edit score\n",
                    "2": "- Enter 2 to edit rankingA\n",
-                   "3": "- Enter 4 to edit rankingB\n"}
+                   "3": "- Enter 3 to edit rankingB\n"}
         while choice not in choices:
             choice = show_menu("PLAYER CHOICE", ''.join(choices.values()), False)
 
@@ -45,7 +45,6 @@ class Matchs_edit:
         return self
 
     def edit(self):
-        print("self.mode = " + str(self.mode))
         if self.mode == "score":
             self.score_mode()
         elif self.mode == "ranking":
@@ -54,7 +53,6 @@ class Matchs_edit:
         return self
 
     def score_mode(self):
-        # array = [[0.5, 0.5], [1, 0], [0, 1]]
         choice = "0"
         choices = {"1": "- Enter 1 to assign this score : A = 0.5 | B = 0.5\n",
                    "2": "- Enter 2 to assign this score : A = 1 | B = 0\n",
@@ -70,8 +68,9 @@ class Matchs_edit:
         return self
 
     def ranking_mode(self):
-        print("ranking_mode")
-        print(self.matchs[self.current_match_id])
+        print(self.matchs[self.current_match_id].get_player_name(self.current_player_id))
+        new_ranking = ask_user("Enter new ranking value", int)
+        self.matchs[self.current_match_id].set_ranking_player(self.current_player_id, new_ranking)
 
         return self
 

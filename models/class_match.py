@@ -17,6 +17,13 @@ class Match:
         self.list2_player_score[1] = value
         self.list2_player_score[0].add_match_result(value)
 
+    def set_ranking_player(self, player_id, value):
+        self.datas[player_id][0].ranking = value
+
+    def get_player_name(self, player_id):
+        name = self.datas[player_id][0].name
+        return name
+
     def serialized_infos(self):
         infos = []
         for data in self.datas:

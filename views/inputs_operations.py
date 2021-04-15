@@ -69,7 +69,7 @@ def tournament_dates_start_end_from_duration(duration_value):
     while type(user_input) != date_type():
         user_input = convert_string_to_date_time(user_input)
         if user_input == "":
-            print("Please write date in this format : " + + format_date_stamp)
+            print("Please write date in this format : " + format_date_stamp)
             user_input = ask_user('Enter tournament date start' + format_date_stamp, str, date_string)
 
     # ADD ITEM(S) IN LIST

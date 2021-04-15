@@ -1,22 +1,13 @@
 from tinydb import TinyDB, Query, where
 from pathlib import Path
 
-from utils.basics_operations import add_folder, root_cleaner
-import sys
-
-import platform
-
+from utils.basics_operations import add_folder
 import time
-# import os
+
 
 def create_db_folder():
-    print("platform.system() = " + str(platform.system()))
-    system_name = platform.system()
-    print("system_name = " + str(system_name))
-
     path_cwd = Path.cwd()
     base_dir_script = Path(path_cwd.parent, "models")
-    print("base_dir_script = " + str(base_dir_script))
 
     try:
         path_bdd_directory = add_folder(base_dir_script, 'BDD')
@@ -24,7 +15,6 @@ def create_db_folder():
         print("Error = " + str(ex))
         path_bdd_directory = ""
 
-    # print("path_bdd_directory = " + str(path_bdd_directory))
     return path_bdd_directory
 
 

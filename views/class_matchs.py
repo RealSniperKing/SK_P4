@@ -1,11 +1,11 @@
 from views.ask_user_module import ask_user
 from views.display_operations import show_menu, convert_dico_to_df, clear
 
-from models.class_match import Match
 
 def edit_match_results(value):
     array = [[0.5, 0.5], [1, 0], [0, 1]]
     return array[value]
+
 
 class Matchs_edit:
     def __init__(self, matchs):
@@ -83,6 +83,3 @@ class Matchs_edit:
                 edited_results.append(match)
 
         return edited_results
-
-
-

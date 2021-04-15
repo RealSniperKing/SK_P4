@@ -42,4 +42,3 @@ def convert_dico_to_df(dico, write=False, name="report"):
         print("Report path = " + str(path_file))
 
         df.to_csv(path_file, sep='\t', encoding='utf-8', index=False)
-

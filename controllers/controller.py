@@ -322,17 +322,11 @@ def tournaments_report():
 
         tournaments_serialized.append(tournament_temp)
 
-
-
     confirm = confirm_or_cancel("Would you like create csv file ?")
     if confirm:
         convert_dico_to_df(tournaments_serialized, True, "tournaments_report.csv")
     else:
         convert_dico_to_df(tournaments_serialized)
-
-
-
-
 
     press_key_to_continue()
 

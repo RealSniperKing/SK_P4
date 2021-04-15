@@ -11,9 +11,11 @@ def get_main_dir():
     main_dir = Path.cwd().parent
     return main_dir
 
+
 def dirpath_add_file(path, filename_ext):
     path_file = Path(path, filename_ext)
     return path_file
+
 
 def add_folder(path_root_folder, name_new_folder):
     tempo_new_folder = os.path.join(path_root_folder, name_new_folder)

@@ -1,5 +1,7 @@
 from os import system, name
 import json
+from utils.basics_operations import get_main_dir, dirpath_add_file
+
 import pandas as pd
 pd.set_option('display.max_rows', 30)
 pd.set_option('display.max_columns', 10)
@@ -29,8 +31,15 @@ def print_dico(serialized_player):
     return text
 
 
-def convert_dico_to_df(dico):
+def convert_dico_to_df(dico, write=False, name="report"):
     print("=====================================")
     df = pd.DataFrame(dico)
     df.index += 1
     print(df)
+
+    if write:
+        path_file = dirpath_add_file(get_main_dir(), name)
+        print("Report path = " + str(path_file))
+
+        df.to_csv(path_file, sep='\t', encoding='utf-8', index=False)
+

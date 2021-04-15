@@ -306,6 +306,7 @@ def players_reports(mode, press_key=True):
 
     return sorted_players
 
+
 def tournaments_report():
     choices, tournaments = analyze_tournaments("tournaments", 3)
 
@@ -321,7 +322,17 @@ def tournaments_report():
 
         tournaments_serialized.append(tournament_temp)
 
-    convert_dico_to_df(tournaments_serialized)
+
+
+    confirm = confirm_or_cancel("Would you like create csv file ?")
+    if confirm:
+        convert_dico_to_df(tournaments_serialized, True, "tournaments_report.csv")
+    else:
+        convert_dico_to_df(tournaments_serialized)
+
+
+
+
 
     press_key_to_continue()
 

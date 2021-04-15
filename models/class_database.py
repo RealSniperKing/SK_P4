@@ -6,8 +6,7 @@ import time
 
 
 def create_db_folder():
-    path_cwd = Path.cwd()
-    base_dir_script = Path(path_cwd.parent, "models")
+    base_dir_script = Path(Path.cwd().parent, "models")
 
     try:
         path_bdd_directory = add_folder(base_dir_script, 'BDD')

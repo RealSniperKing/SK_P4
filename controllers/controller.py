@@ -10,6 +10,7 @@ from models.class_database import create_db_folder, Database
 from controllers.algorithm import Algo_suisse
 from models.class_round import Round
 from models.class_match import Match
+from views.class_matchs import Matchs_edit
 
 import os
 import os.path
@@ -372,7 +373,21 @@ def start_game(tournament, players):
             matchs = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
             new_round = Round(matchs, "Round " + str(rounds_count + 1))
 
-        new_round.start().play(0)
+        # new_round.start().play(0)  # automatic mode
+        new_round.start()
+
+        match_to_edit = Matchs_edit(new_round.list_matchs)
+        edited_results = []
+        while len(edited_results) != len(match_to_edit.matchs):
+            match_to_print = extract_matchs(match_to_edit.matchs)
+            edited_results = match_to_edit.get_match(match_to_print).edit().check_results()
+
+            print("len edited_results = " + str(edited_results))
+            if len(edited_results) == len(match_to_edit.matchs):
+                confirm = confirm_or_cancel("Are you sure to close this round ?\n")
+                if not confirm:
+                    edited_results = []
+
         press_key_to_continue("Press Enter to write round results...")
         new_round.end()
         tournament.add_round_in_rounds(new_round)

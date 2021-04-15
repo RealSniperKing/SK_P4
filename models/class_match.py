@@ -7,6 +7,8 @@ class Match:
 
         self.serialized_matchs = []
 
+        self.empty_result = True
+
     def set_score_player_1(self, value):
         self.list1_player_score[1] = value
         self.list1_player_score[0].add_match_result(value)

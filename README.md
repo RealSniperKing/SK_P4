@@ -20,7 +20,7 @@ If the virtual environment was not created successfully, you need install this p
 #### Run virtual environment
 `call  env/Scripts/activate.bat`
 
-Warning, if you use linux system:  
+Warning, if you use linux system or Mac OS:  
 `source env/bin/activate`  
 
 "(env)" is displayed if the environment have been activated

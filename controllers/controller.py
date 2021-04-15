@@ -359,37 +359,27 @@ def start_game(tournament, players):
     path_bdd = create_db_folder()
     database_object = Database(path_bdd, "database")
 
-    rounds_count = len(tournament.rounds)
-
     algo = Algo_suisse(players)
-    if rounds_count == 0:
-        tournament.set_players(players)  # init players list
-        matchs_first = algo.first_sort()
-
-        # ROUND1
-        first_round = Round(matchs_first, "Round 1")
-        first_round.start().play(0).end()
-        tournament.add_round_in_rounds(first_round)
-
-        press_key_to_continue("Press Enter to write round results...")
-        database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
-
     rounds_count = len(tournament.rounds)
 
     while rounds_count != tournament.turns:
-        last_round = tournament.rounds[rounds_count - 1]
-        matchs_loop = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
+        if rounds_count == 0:
+            tournament.set_players(players)  # init players list
+            matchs = algo.first_sort()
+            new_round = Round(matchs, "Round " + str(rounds_count + 1))
+        else:
+            last_round = tournament.rounds[rounds_count - 1]
+            matchs = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
+            new_round = Round(matchs, "Round " + str(rounds_count + 1))
 
-        new_round = Round(matchs_loop, "Round " + str(rounds_count + 1))
-        new_round.start().play(0).end()
+        new_round.start().play(0)
+        press_key_to_continue("Press Enter to write round results...")
+        new_round.end()
         tournament.add_round_in_rounds(new_round)
+
         rounds_count = len(tournament.rounds)
 
-        press_key_to_continue("Press Enter to write round results...")
         database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
 
-    print("****************************")
-
     show_rounds_result(tournament.rounds)
-
     press_key_to_continue("Press Enter to close this game...")

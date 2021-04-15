@@ -113,7 +113,7 @@ def analyze_tournaments(table_name, mode, text=" to run : "):
     return choices, return_tournaments
 
 
-def analyze_players(table_name):
+def analyze_players(table_name, text=" to add : "):
     """ return all players objects from database """
     path_bdd = create_db_folder()
 
@@ -126,7 +126,7 @@ def analyze_players(table_name):
         players_objects = dic_players_to_ob(players)
 
         for i, p in enumerate(players_objects, 1):
-            choices[str(i)] = "- Enter " + str(i) + " to add : " + p.name + " " + p.firstname + "\n"
+            choices[str(i)] = "- Enter " + str(i) + text + p.name + " " + p.firstname + "\n"
 
     return choices, players_objects
 
@@ -213,6 +213,21 @@ def players_to_dico(players):
     return players_dico
 
 
+# EDIT --------------------------------------------------
+
+def edit_player(player, new_ranking):
+    print("choice = " + str(player))
+    player.ranking = new_ranking
+
+    items_to_check = {"name": player.name, "firstname": player.firstname}
+    path_bdd = create_db_folder()
+    database_object = Database(path_bdd, "database").create_or_load_table_name("players")
+
+    serialized_player = player.serialized()
+    database_object.update_player(items_to_check, serialized_player)
+
+    convert_dico_to_df([serialized_player])
+
 # REPORT --------------------------------------------------
 
 
@@ -275,7 +290,7 @@ def report_game(tournament, mode):
     press_key_to_continue()
 
 
-def players_reports(mode):
+def players_reports(mode, press_key=True):
     """ mode 0 = by alphabetical order / mode 1 = by ranking """
     choices, players_objects = analyze_players("players")
 
@@ -286,8 +301,10 @@ def players_reports(mode):
 
     convert_dico_to_df(players_to_dico(sorted_players))
 
-    press_key_to_continue()
+    if press_key:
+        press_key_to_continue()
 
+    return sorted_players
 
 def tournaments_report():
     choices, tournaments = analyze_tournaments("tournaments", 3)

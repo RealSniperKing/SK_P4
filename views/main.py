@@ -6,7 +6,7 @@ if True:  # noqa: E402
     from views.inputs_operations import ask_user, confirm_or_cancel
 
     from controllers.controller import add_player_in_db, add_tournament_in_db, analyze_tournaments, analyze_players, \
-        start_game, report_game, players_reports, tournaments_report, remove_db_item
+        start_game, report_game, players_reports, tournaments_report, remove_db_item, edit_player
 
 
 class UI:
@@ -37,7 +37,7 @@ class UI:
         """ Display players menu and control calls to actions """
         choice = "0"
         choices = {"1": "- Enter 1 to Add player\n",
-                   "2": "- Enter 2 to Edit Player\n",
+                   "2": "- Enter 2 to Edit player ranking\n",
                    "3": "- Enter 3 to print all players by alphabetical order\n",
                    "4": "- Enter 4 to print all players by ranking\n",
                    "5": "- Enter 5 to Return in Main Menu\n"}
@@ -49,6 +49,7 @@ class UI:
             add_player_in_db()
             self.menu_player_actions()
         elif choice == "2":
+            self.menu_edit_player()
             self.menu_player_actions()
         elif choice == "3":
             players_reports(0)
@@ -120,7 +121,11 @@ class UI:
             tournament = tournaments_empty[int(choice) - 1]
             # INPUT PLAYERS
             self.select_tournament = tournament
-            self.menu_select_players()
+            players_to_party, players_object_to_party = self.menu_select_players()
+
+            confirm = confirm_or_cancel("Are you sure to start this tournament ?\n")
+            if confirm:
+                start_game(self.select_tournament, players_object_to_party)
 
     def menu_resume_play(self):
         choices, tournaments_inprogress = analyze_tournaments("tournaments", 1)
@@ -174,10 +179,20 @@ class UI:
                     players_object_to_party.append(players_objects[int(choice) - 1])
             choice = "0"
 
-        print(players_to_party)
-        confirm = confirm_or_cancel("Are you sure to start this tournament ?\n")
-        if confirm:
-            start_game(self.select_tournament, players_object_to_party)
+        return players_to_party, players_object_to_party
+        # confirm = confirm_or_cancel("Are you sure to start this tournament ?\n")
+        # if confirm:
+        #     start_game(self.select_tournament, players_object_to_party)
+
+    def menu_edit_player(self):
+        players_objects = players_reports(1, False)
+
+        player_number = 0
+        while player_number not in range(1, len(players_objects) + 1):
+            player_number = ask_user("Enter player number to edit his score", int)
+
+        new_ranking = ask_user("Enter new ranking value", int)
+        edit_player(players_objects[player_number - 1], new_ranking)
 
     def menu_game_report(self):
         choice = "0"

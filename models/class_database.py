@@ -62,6 +62,18 @@ class Database:
         if id_dico != -1:
             self.current_table_object.update(dico_t, doc_ids=[id_dico])
 
+    def update_player(self, items_to_check, dico_player):
+        db = self.current_table_object
+        ids = []
+
+        for item in items_to_check:
+            doc = db.get(where(item) == items_to_check[item])
+            ids.append(doc.doc_id)
+
+        if len(set(ids)) == 1:
+            id_dico = ids[0]
+            self.current_table_object.update(dico_player, doc_ids=[id_dico])
+
     def remove_item(self, items_to_check):
         db = self.current_table_object
 

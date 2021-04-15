@@ -220,9 +220,12 @@ def extract_matchs(round_matchs):
     items = []
     for match in round_matchs:
         match_temp = match.serialized_infos()
-        match_infos = {'playerA': match_temp[0]["player_object"].name, 'scoreA': match_temp[0]["player_score"],
-                       'rankingA': match_temp[0]["player_ranking"], 'playerB': match_temp[1]["player_object"].name,
-                       'scoreB': match_temp[1]["player_score"], 'rankingB': match_temp[0]["player_ranking"]}
+        match_infos = {'playerA': match_temp[0]["player_object"].name,
+                       'scoreA': match_temp[0]["player_score"],
+                       'rankingA': match_temp[0]["player_ranking"],
+                       'playerB': match_temp[1]["player_object"].name,
+                       'scoreB': match_temp[1]["player_score"],
+                       'rankingB': match_temp[1]["player_ranking"]}
         items.append(match_infos)
     return items
 

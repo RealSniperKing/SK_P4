@@ -387,6 +387,7 @@ def start_game(tournament, players):
                 confirm = confirm_or_cancel("Are you sure to close this round ?\n")
                 if not confirm:
                     edited_results = []
+        new_round.list_matchs = match_to_edit.matchs
 
         press_key_to_continue("Press Enter to write round results...")
         new_round.end()

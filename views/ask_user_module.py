@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def ask_user(message, type_var, default_value):
+def ask_user(message, type_var, default_value=""):
     # EDIT MESSAGE
     if default_value != "":
         message += " (default value = " + str(default_value) + ") :"

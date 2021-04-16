@@ -9,7 +9,7 @@ from models.class_database import create_db_folder, Database
 from controllers.algorithm import Algo_suisse
 from models.class_round import Round
 from models.class_match import Match
-from views.class_matchs import Matchs_edit
+from views.class_matchs_edit_mode import Matchs_edit
 
 import os
 import os.path
@@ -382,7 +382,6 @@ def debug_matchs(matchs):
 
 
 def start_game(tournament, players):
-    """ Start directly game without menu"""
     path_bdd = create_db_folder()
     database_object = Database(path_bdd, "database")
 
@@ -400,19 +399,23 @@ def start_game(tournament, players):
             new_round = Round(matchs, "Round " + str(rounds_count + 1))
 
         # new_round.start().play(0)  # automatic mode
+
+        # manual mode ----->
         new_round.start()
         match_to_edit = Matchs_edit(new_round.list_matchs)
         edited_results = []
         while len(edited_results) != len(match_to_edit.matchs):
             match_to_print = extract_matchs(match_to_edit.matchs)
-            edited_results = match_to_edit.get_match(match_to_print).edit().check_results()
+            edited_results = match_to_edit.show(match_to_print, new_round.name).get_match().edit().check_results()
 
-            print("len edited_results = " + str(edited_results))
+            match_to_edit.show(extract_matchs(match_to_edit.matchs), new_round.name)
+
             if len(edited_results) == len(match_to_edit.matchs):
                 confirm = confirm_or_cancel("Are you sure to close this round ?\n")
                 if not confirm:
                     edited_results = []
         new_round.list_matchs = match_to_edit.matchs
+        # <----- manual mode
 
         press_key_to_continue("Press Enter to write round results...")
         new_round.end()

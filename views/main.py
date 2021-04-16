@@ -199,8 +199,10 @@ class UI:
         while player_number not in range(1, len(players_objects) + 1):
             player_number = ask_user("Enter player number to edit his score", int)
 
+        player_object = players_objects[player_number - 1]
+        print(''.join([player_object.name, " ", player_object.firstname]))
         new_ranking = ask_user("Enter new ranking value", int)
-        edit_player(players_objects[player_number - 1], new_ranking)
+        edit_player(player_object, new_ranking)
 
     def menu_game_report(self):
         choice = "0"

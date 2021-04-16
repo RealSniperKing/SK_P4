@@ -1,6 +1,6 @@
 from views.ask_user_module import ask_user
 from views.display_operations import show_menu, convert_dico_to_df, clear
-
+import time
 
 def edit_match_results(value):
     array = [[0.5, 0.5], [1, 0], [0, 1]]
@@ -68,7 +68,6 @@ class Matchs_edit:
         return self
 
     def ranking_mode(self):
-        print(self.matchs[self.current_match_id].get_player_name(self.current_player_id))
         new_ranking = ask_user("Enter new ranking value", int)
         self.matchs[self.current_match_id].set_ranking_player(self.current_player_id, new_ranking)
 

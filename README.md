@@ -58,7 +58,40 @@ If you need generate file requirements.txt
 `pip freeze > requirements.txt`
 
 --------------------------------------------------------------------------------
-# How to use application
+# How to use this application
 
+#### The main menu is divide by three parts :
+* Enter 1 to acces Players Menu 
+* Enter 2 to acces Tournaments Menu
+* Enter 3 to access a Game Menu  
 
+You need use numpad to navigate through them.
+
+1. #### Players Menu :
+    This menu contain alls options about players. You can :
+    * add player
+    * edit player ranking
+    * print all players by alphabetical order
+    * print all players by ranking  
+    
+    Warning, before start a game, you need absolutely add players to database.
+
+2. #### Tournament Menu :
+    With this menu, you can :
+    * add a new tournament
+    * print all tournaments
+    * remove a tournament
+    
+    Warning, before start a game, you need absolutely add a one tournament todatabase.
+    
+3. #### Game Menu :  
+    You can do start a new game, but it's also possible resume a tournament.
+    The "show game result" option you allow him to print all rapport about games
+    * start a game
+    * continue a game
+    * show game results
+
+    Happy enjoy !
+
+    
 

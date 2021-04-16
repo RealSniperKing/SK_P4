@@ -1,6 +1,5 @@
-from views.display_operations import print_dico, clear, convert_dico_to_df
-from views.inputs_operations import inputs_add_player, inputs_add_tournament, confirm_or_cancel, \
-    press_key_to_continue
+from views.display_operations import print_dico, clear, convert_dico_to_df, df_to_csv
+from views.inputs_operations import inputs_add_player, inputs_add_tournament, confirm_or_cancel, press_key_to_continue
 
 from models.class_player_model import Player
 from models.class_tournament_model import Tournament
@@ -14,6 +13,7 @@ from views.class_matchs import Matchs_edit
 
 import os
 import os.path
+import time
 
 
 # DATABASE --------------------------------------------------
@@ -216,7 +216,6 @@ def players_to_dico(players):
 # EDIT --------------------------------------------------
 
 def edit_player(player, new_ranking):
-    print("choice = " + str(player))
     player.ranking = new_ranking
 
     items_to_check = {"name": player.name, "firstname": player.firstname}
@@ -227,6 +226,8 @@ def edit_player(player, new_ranking):
     database_object.update_player(items_to_check, serialized_player)
 
     convert_dico_to_df([serialized_player])
+    time.sleep(3)
+
 
 # REPORT --------------------------------------------------
 
@@ -322,11 +323,11 @@ def tournaments_report():
 
         tournaments_serialized.append(tournament_temp)
 
+    df = convert_dico_to_df(tournaments_serialized)
+
     confirm = confirm_or_cancel("Would you like create csv file ?")
     if confirm:
-        convert_dico_to_df(tournaments_serialized, True, "tournaments_report.csv")
-    else:
-        convert_dico_to_df(tournaments_serialized)
+        df_to_csv(df, "tournaments_report.csv")
 
     press_key_to_continue()
 
@@ -400,7 +401,6 @@ def start_game(tournament, players):
 
         # new_round.start().play(0)  # automatic mode
         new_round.start()
-
         match_to_edit = Matchs_edit(new_round.list_matchs)
         edited_results = []
         while len(edited_results) != len(match_to_edit.matchs):

@@ -11,16 +11,22 @@ class Matchs_edit:
     def __init__(self, matchs):
         self.matchs = matchs
 
+        self.items = None
         self.current_player_id = None
         self.current_match_id = None
         self.mode = None
 
-    def get_match(self, items):
+    def show(self, items, round_name):
         clear()
+        print(round_name)
         convert_dico_to_df(items)
+        self.items = items
 
+        return self
+
+    def get_match(self):
         match_number = 0
-        while match_number not in range(1, len(items) + 1):
+        while match_number not in range(1, len(self.items) + 1):
             match_number = ask_user("Enter match number to edit", int)
 
         choice = "0"
@@ -75,8 +81,6 @@ class Matchs_edit:
 
     def check_results(self):
         edited_results = []
-        print("check_results")
-
         for match in self.matchs:
             if not match.empty_result:
                 edited_results.append(match)

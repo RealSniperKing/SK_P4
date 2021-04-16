@@ -191,9 +191,6 @@ class UI:
             choice = "0"
 
         return players_to_party, players_object_to_party
-        # confirm = confirm_or_cancel("Are you sure to start this tournament ?\n")
-        # if confirm:
-        #     start_game(self.select_tournament, players_object_to_party)
 
     def menu_edit_player(self):
         players_objects = players_reports(1, False)

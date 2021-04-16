@@ -159,13 +159,24 @@ class UI:
             self.menu_game_report()
 
     def menu_select_players(self):
-        players_max = ask_user('Enter players number', int, "8")
+        players_min = 4
+        players_input = -2
+        while not players_input >= players_min:
+            players_input = ask_user('Enter players number', int, "8")
+            if not players_input % 2 == 0:
+                print("Please enter a even number")
+                players_input = -2
+
+            if players_input < players_min and players_input != -2:
+                print(str(players_min) + " is a minimum number of players")
+                players_input = -2
+
         choices, players_objects = analyze_players("players")
         choice = "0"
 
         players_to_party = []
         players_object_to_party = []
-        while len(players_to_party) != players_max:
+        while len(players_to_party) != players_input:
             clear()
             print("Players list :")
             print(players_to_party)

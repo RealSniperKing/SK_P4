@@ -82,7 +82,7 @@ You need use numpad to navigate through them.
     * print all tournaments
     * remove a tournament
     
-    Warning, before start a game, you need absolutely add a one tournament todatabase.
+    Warning, before start a game, you need absolutely add a tournament todatabase.
     
 3. #### Game Menu :  
     You can do start a new game, but it's also possible resume a tournament.

@@ -14,8 +14,8 @@ def press_key_to_continue(text="Press Enter to continue..."):
 
 def confirm_or_cancel(title):
     choice = "0"
-    choices = {"1": "- Enter 1 to Confirm\n",
-               "2": "- Enter 2 to Cancel\n"}
+    choices = {"1": "- Enter 1 to Yes\n",
+               "2": "- Enter 2 to No\n"}
 
     while choice not in list(choices):
         choice = show_menu(title,  ''.join(choices.values()), False)

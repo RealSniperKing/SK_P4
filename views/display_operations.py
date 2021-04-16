@@ -31,14 +31,17 @@ def print_dico(serialized_player):
     return text
 
 
-def convert_dico_to_df(dico, write=False, name="report"):
+def convert_dico_to_df(dico):
     print("=====================================")
     df = pd.DataFrame(dico)
     df.index += 1
     print(df)
 
-    if write:
-        path_file = dirpath_add_file(get_main_dir(), name)
-        print("Report path = " + str(path_file))
+    return df
 
-        df.to_csv(path_file, sep='\t', encoding='utf-8', index=False)
+
+def df_to_csv(df, name="report"):
+    path_file = dirpath_add_file(get_main_dir(), name)
+    print("Report path = " + str(path_file))
+
+    df.to_csv(path_file, sep='\t', encoding='utf-8', index=False)

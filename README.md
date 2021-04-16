@@ -74,23 +74,19 @@ You need use numpad to navigate through them.
     * print all players by alphabetical order
     * print all players by ranking  
     
-    Warning, before start a game, you need absolutely add players to database.
-
 2. #### Tournament Menu :
     With this menu, you can :
     * add a new tournament
     * print all tournaments
-    * remove a tournament
-    
-    Warning, before start a game, you need absolutely add a tournament todatabase.
-    
+    * remove a tournament  
+        
 3. #### Game Menu :  
     You can do start a new game, but it's also possible resume a tournament.
     The "show game result" option you allow him to print all rapport about games
     * start a game
     * continue a game
-    * show game results
-
+    * show game results  
+    Warning, before start a game, you need absolutely add players and a tournament to database.
     Happy enjoy !
 
     

@@ -1,7 +1,6 @@
 from os import system, name
 import json
-from utils.basics_operations import get_main_dir, dirpath_add_file
-
+from utils.basics_operations import get_main_dir, dirpath_add_file, check_commands
 import pandas as pd
 pd.set_option('display.max_rows', 30)
 pd.set_option('display.max_columns', 10)
@@ -21,6 +20,7 @@ def show_menu(title, input_value, clear_console=True):
 
     print(title)
     choice = input(input_value)
+    check_commands(choice)
     return choice
 
 

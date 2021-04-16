@@ -6,6 +6,13 @@ from pathlib import Path
 
 # BASIC OPERATIONS
 
+def check_commands(user_input):
+    # if user_input.lower() == "--exit":
+    #     exit()
+    if user_input.lower() == "--menu":
+        main_path = ''.join([str(get_main_dir()), "/views/main.py"])
+        os.system(main_path)
+
 
 def get_main_dir():
     main_dir = Path.cwd().parent

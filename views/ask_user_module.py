@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from utils.basics_operations import check_commands
 
 def ask_user(message, type_var, default_value=""):
     # EDIT MESSAGE
@@ -10,6 +10,7 @@ def ask_user(message, type_var, default_value=""):
 
     # CHECK RESPONSE
     user_input = input(message) or default_value
+    check_commands(user_input)
     alert, user_input = ask_user_alert(user_input, type_var)
 
     # IF BAD RESPONSE

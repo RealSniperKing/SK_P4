@@ -11,6 +11,7 @@ from models.class_round import Round
 from models.class_match import Match
 from views.class_matchs_edit_mode import Matchs_edit
 
+from utils.basics_operations import check_commands
 import os
 import os.path
 import time
@@ -395,10 +396,9 @@ def start_game(tournament, players):
             new_round = Round(matchs, "Round " + str(rounds_count + 1))
         else:
             last_round = tournament.rounds[rounds_count - 1]
+
             matchs = algo.second_sort(last_round).old_matchs(tournament.rounds).second_pairing().switch_players()
             new_round = Round(matchs, "Round " + str(rounds_count + 1))
-
-        # new_round.start().play(0)  # automatic mode
 
         # manual mode ----->
         new_round.start()
@@ -417,13 +417,20 @@ def start_game(tournament, players):
         new_round.list_matchs = match_to_edit.matchs
         # <----- manual mode
 
-        press_key_to_continue("Press Enter to write round results...")
+        # press_key_to_continue("Press Enter to write round results...")
+
         new_round.end()
         tournament.add_round_in_rounds(new_round)
 
         rounds_count = len(tournament.rounds)
 
         database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
+
+        confirm_next = confirm_or_cancel("Would you start next round now ?\n")
+        if confirm_next:
+            continue
+        else:
+            check_commands("--menu")
 
     show_rounds_result(tournament.rounds)
     press_key_to_continue("Press Enter to close this game...")

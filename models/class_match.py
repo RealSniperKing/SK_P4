@@ -7,7 +7,10 @@ class Match:
 
         self.serialized_matchs = []
 
-        self.empty_result = True
+        if self.list1_player_score[1] == 0 and self.list2_player_score[1] == 0:
+            self.empty_result = True
+        else:
+            self.empty_result = False
 
     def set_score_player_1(self, value):
         self.list1_player_score[1] = value

@@ -1,5 +1,6 @@
 from os import system, name
 import json
+import time
 from utils.basics_operations import get_main_dir, dirpath_add_file, check_commands
 import pandas as pd
 pd.set_option('display.max_rows', 30)
@@ -45,3 +46,8 @@ def df_to_csv(df, name="report"):
     print("Report path = " + str(path_file))
 
     df.to_csv(path_file, sep='\t', encoding='utf-8', index=False)
+
+
+def message_alert(text, timer=3):
+    print(text)
+    time.sleep(timer)

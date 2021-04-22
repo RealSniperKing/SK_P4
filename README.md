@@ -70,6 +70,7 @@ You need use numpad to navigate through them.
 1. #### Players Menu :
     This menu contain alls options about players. You can :
     * add player
+    * remove player
     * edit player ranking
     * print all players by alphabetical order
     * print all players by ranking  

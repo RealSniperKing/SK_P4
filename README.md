@@ -86,10 +86,8 @@ You need use numpad to navigate through them.
     * start a game
     * continue a game
     * show game results  
-    Warning, before start a game, you need absolutely add players and a tournament to database.
     
-Last trick : in each input fields, you can return to menu when use this command  
-`--menu`
+    Warning, before start a game, you need absolutely add players and a tournament to database.
 
 Happy enjoy !
 

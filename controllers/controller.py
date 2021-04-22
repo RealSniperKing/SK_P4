@@ -430,7 +430,11 @@ def start_game(tournament, players):
 
         database_object.create_or_load_table_name('tournaments').update_item(tournament.name, tournament.serialized())
 
-        confirm_next = confirm_or_cancel("Would you start next round now ?\n")
+        if rounds_count < tournament.turns:
+            confirm_next = confirm_or_cancel("Would you start next round now ?\n")
+        elif rounds_count == tournament.turns:
+            confirm_next = True
+
         if confirm_next:
             continue
         else:

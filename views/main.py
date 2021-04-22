@@ -132,8 +132,6 @@ class UI:
                 if confirm:
                     start_game(self.select_tournament, players_object_to_party)
 
-
-
     def menu_resume_play(self):
         choices, tournaments_inprogress = analyze_tournaments("tournaments", 1)
         choice = "0"
@@ -151,7 +149,7 @@ class UI:
             start_game(self.select_tournament, self.select_tournament.players)
 
     def menu_show_game_result(self):
-        choices, tournaments_ended = analyze_tournaments("tournaments", 2)
+        choices, tournaments_ended = analyze_tournaments("tournaments", 3)
         choice = "0"
         cancel_id = str(len(choices) + 1)
         choices[cancel_id] = "- Enter " + cancel_id + " to access a Game Menu\n"
@@ -271,6 +269,7 @@ class UI:
                 remove_db_item(tournament, "this tournament", "tournaments")
         else:
             message_alert("Please, add a new tournament")
+
 
 if __name__ == '__main__':
     UI()

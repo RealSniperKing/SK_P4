@@ -1,6 +1,6 @@
 from views.ask_user_module import ask_user
 from views.display_operations import show_menu, convert_dico_to_df, clear
-import time
+
 
 def edit_match_results(value):
     array = [[0.5, 0.5], [1, 0], [0, 1]]

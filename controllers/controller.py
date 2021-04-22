@@ -148,7 +148,7 @@ def remove_db_item(item, item_string, table_name):
         items_to_check = {"name": item.name, "place": item.place}
 
     if table_name == "players":
-        items_to_check = {"name": item.name, "firstname": item.place}
+        items_to_check = {"name": item.name, "firstname": item.firstname}
 
     confirm = confirm_or_cancel("Are you sure to remove " + item_string + " in database ?\n" + str(item_name))
     if confirm:

@@ -1,6 +1,7 @@
 from datetime import datetime
 from utils.basics_operations import check_commands
 
+
 def ask_user(message, type_var, default_value=""):
     # EDIT MESSAGE
     if default_value != "":

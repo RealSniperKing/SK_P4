@@ -127,12 +127,12 @@ class UI:
             self.select_tournament = tournament
             players_to_party, players_object_to_party = self.menu_select_players()
 
-            if len(players_object_to_party) > 0:
+            if players_object_to_party:
                 confirm = confirm_or_cancel("Are you sure to start this tournament ?\n")
                 if confirm:
                     start_game(self.select_tournament, players_object_to_party)
-            else:
-                message_alert("Please, add players to play a tournament")
+
+
 
     def menu_resume_play(self):
         choices, tournaments_inprogress = analyze_tournaments("tournaments", 1)
@@ -183,7 +183,7 @@ class UI:
 
         players_to_party = []
         players_object_to_party = []
-        if len(choices) > 0:
+        if len(players_objects) >= players_min:
             while len(players_to_party) != players_input:
                 clear()
                 print("Players list :")
@@ -197,31 +197,36 @@ class UI:
                         players_to_party.append(choice)
                         players_object_to_party.append(players_objects[int(choice) - 1])
                 choice = "0"
+        else:
+            message_alert("Please, add more players to play a tournament")
 
         return players_to_party, players_object_to_party
 
     def menu_edit_player(self):
         players_objects = players_reports(1, False)
 
-        player_number = 0
-        while player_number not in range(1, len(players_objects) + 1):
-            player_number = ask_user("Enter player number to edit his score", int)
+        if players_objects:
+            player_number = 0
+            while player_number not in range(1, len(players_objects) + 1):
+                player_number = ask_user("Enter player number to edit his score", int)
 
-        player_object = players_objects[player_number - 1]
-        print(''.join([player_object.name, " ", player_object.firstname]))
-        new_ranking = ask_user("Enter new ranking value", int)
-        edit_player(player_object, new_ranking)
+            player_object = players_objects[player_number - 1]
+            print(''.join([player_object.name, " ", player_object.firstname]))
+            new_ranking = ask_user("Enter new ranking value", int)
+
+            edit_player(player_object, new_ranking)
 
     def menu_remove_player(self):
         players_objects = players_reports(1, False)
 
-        player_number = 0
-        while player_number not in range(1, len(players_objects) + 1):
-            player_number = ask_user("Enter player number would like to remove", int)
+        if players_objects:
+            player_number = 0
+            while player_number not in range(1, len(players_objects) + 1):
+                player_number = ask_user("Enter player number would like to remove", int)
 
-        player_object = players_objects[player_number - 1]
+            player_object = players_objects[player_number - 1]
 
-        remove_db_item(player_object, "this player", "players")
+            remove_db_item(player_object, "this player", "players")
 
     def menu_game_report(self):
         choice = "0"
@@ -250,20 +255,22 @@ class UI:
             self.menu_game_actions()
 
     def menu_remove_tournament(self):
-        choices, tournaments_empty = analyze_tournaments("tournaments", 3, " to delete : ")
-        choice = "0"
-        cancel_id = str(len(choices) + 1)
-        choices[cancel_id] = "- Enter " + cancel_id + " to access a Game Menu\n"
+        choices, tournaments = analyze_tournaments("tournaments", 3, " to delete : ")
+        if tournaments:
+            choice = "0"
+            cancel_id = str(len(choices) + 1)
+            choices[cancel_id] = "- Enter " + cancel_id + " to access a Game Menu\n"
 
-        while choice not in list(choices):
-            choice = show_menu("DELETE - TOURNAMENT", ''.join(choices.values()), False)
+            while choice not in list(choices):
+                choice = show_menu("DELETE - TOURNAMENT", ''.join(choices.values()), False)
 
-        if choice in choices and choice != cancel_id:
-            tournament = tournaments_empty[int(choice) - 1]
-            # INPUT PLAYERS
-            self.select_tournament = tournament
-            remove_db_item(tournament, "this tournament", "tournaments")
-
+            if choice in choices and choice != cancel_id:
+                tournament = tournaments[int(choice) - 1]
+                # INPUT PLAYERS
+                self.select_tournament = tournament
+                remove_db_item(tournament, "this tournament", "tournaments")
+        else:
+            message_alert("Please, add a new tournament")
 
 if __name__ == '__main__':
     UI()

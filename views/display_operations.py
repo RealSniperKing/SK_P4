@@ -48,6 +48,6 @@ def df_to_csv(df, name="report"):
     df.to_csv(path_file, sep='\t', encoding='utf-8', index=False)
 
 
-def message_alert(text, timer=3):
+def message_alert(text, timer=3.5):
     print(text)
     time.sleep(timer)

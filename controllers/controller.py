@@ -1,4 +1,4 @@
-from views.display_operations import print_dico, clear, convert_dico_to_df, df_to_csv
+from views.display_operations import print_dico, clear, convert_dico_to_df, df_to_csv, message_alert
 from views.inputs_operations import inputs_add_player, inputs_add_tournament, confirm_or_cancel, press_key_to_continue
 
 from models.class_player_model import Player
@@ -224,10 +224,10 @@ def edit_player(player, new_ranking):
     database_object = Database(path_bdd, "database").create_or_load_table_name("players")
 
     serialized_player = player.serialized()
-    database_object.update_player(items_to_check, serialized_player)
-
-    convert_dico_to_df([serialized_player])
-    time.sleep(3)
+    if len(serialized_player) > 0:
+        database_object.update_player(items_to_check, serialized_player)
+        convert_dico_to_df([serialized_player])
+        time.sleep(3)
 
 
 # REPORT --------------------------------------------------
@@ -301,37 +301,41 @@ def players_reports(mode, press_key=True):
     elif mode == 1:
         sorted_players = sorted(players_objects, key=lambda x: x.ranking)
 
-    convert_dico_to_df(players_to_dico(sorted_players))
+    if len(players_objects) > 0:
+        convert_dico_to_df(players_to_dico(sorted_players))
 
-    if press_key:
-        press_key_to_continue()
+        if press_key:
+            press_key_to_continue()
+    else:
+        message_alert("The players list is empty, please create new player.")
 
     return sorted_players
 
 
 def tournaments_report():
     choices, tournaments = analyze_tournaments("tournaments", 3)
+    if tournaments:
+        tournaments_serialized = []
+        for tournament in tournaments:
+            tournament_temp = tournament.serialized()
 
-    tournaments_serialized = []
-    for tournament in tournaments:
-        tournament_temp = tournament.serialized()
+            len_rounds = len(tournament_temp['rounds'])
+            len_players = len(tournament_temp['players'])
 
-        len_rounds = len(tournament_temp['rounds'])
-        len_players = len(tournament_temp['players'])
+            tournament_temp['rounds'] = len_rounds
+            tournament_temp['players'] = len_players
 
-        tournament_temp['rounds'] = len_rounds
-        tournament_temp['players'] = len_players
+            tournaments_serialized.append(tournament_temp)
 
-        tournaments_serialized.append(tournament_temp)
+        df = convert_dico_to_df(tournaments_serialized)
 
-    df = convert_dico_to_df(tournaments_serialized)
+        confirm = confirm_or_cancel("Would you like create csv file ?")
+        if confirm:
+            df_to_csv(df, "tournaments_report.csv")
 
-    confirm = confirm_or_cancel("Would you like create csv file ?")
-    if confirm:
-        df_to_csv(df, "tournaments_report.csv")
-
-    press_key_to_continue()
-
+        press_key_to_continue()
+    else:
+        message_alert("Please, add a new tournament")
 
 # GAME ACTIONS --------------------------------------------------
 

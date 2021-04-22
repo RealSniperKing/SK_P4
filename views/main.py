@@ -38,9 +38,10 @@ class UI:
         choice = "0"
         choices = {"1": "- Enter 1 to Add player\n",
                    "2": "- Enter 2 to Edit player ranking\n",
-                   "3": "- Enter 3 to print all players by alphabetical order\n",
-                   "4": "- Enter 4 to print all players by ranking\n",
-                   "5": "- Enter 5 to Return in Main Menu\n"}
+                   "3": "- Enter 3 to Remove a player\n",
+                   "4": "- Enter 4 to print all players by alphabetical order\n",
+                   "5": "- Enter 5 to print all players by ranking\n",
+                   "6": "- Enter 6 to Return in Main Menu\n"}
 
         while choice not in choices:
             choice = show_menu("PLAYER - MENU", ''.join(choices.values()))
@@ -52,12 +53,15 @@ class UI:
             self.menu_edit_player()
             self.menu_player_actions()
         elif choice == "3":
-            players_reports(0)
+            self.menu_remove_player()
             self.menu_player_actions()
         elif choice == "4":
-            players_reports(1)
+            players_reports(0)
             self.menu_player_actions()
         elif choice == "5":
+            players_reports(1)
+            self.menu_player_actions()
+        elif choice == "6":
             self.main_menu_actions()
 
         return self
@@ -203,6 +207,17 @@ class UI:
         print(''.join([player_object.name, " ", player_object.firstname]))
         new_ranking = ask_user("Enter new ranking value", int)
         edit_player(player_object, new_ranking)
+
+    def menu_remove_player(self):
+        players_objects = players_reports(1, False)
+
+        player_number = 0
+        while player_number not in range(1, len(players_objects) + 1):
+            player_number = ask_user("Enter player number would like to remove", int)
+
+        player_object = players_objects[player_number - 1]
+
+        remove_db_item(player_object, "this player", "players")
 
     def menu_game_report(self):
         choice = "0"

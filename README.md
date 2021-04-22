@@ -15,7 +15,7 @@
     Warning, if you use linux system:  
     `python3 -m venv env`  
 
-    If the virtual environment was not created successfully, you need install this package:  
+    On Linux, if the virtual environment was not created successfully, you need install this package:  
     `sudo apt-get install python3-venv`
 
 * #### Run virtual environment
